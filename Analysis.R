@@ -26,6 +26,8 @@ CF_sub<-c("Warm Wet","Hot Dry")
 GCM_sub<-c("inmcm4.rcp45", "IPSL-CM5A-MR.rcp85")
 
 col.RCP2 = c("blue", "red")
+col.RCP3 = c("white","blue", "red")
+colors2 <- c("#9A9EE5","#E10720")
 
 ### Create DFs for summarizing ###
 ALL_HIST$Year<-format(ALL_HIST$Date,"%Y")
@@ -287,21 +289,151 @@ FM_quad$CF<-factor(FM_quad$CF,levels=CF_sub)
 FM_indiv<-subset(Future_Means,GCM %in% GCM_sub)
 FM_indiv$GCM<-factor(FM_indiv$GCM,levels=GCM_sub)
 
-RCP.P<-aggregate(PrecipCustom~emissions+per,Future_Means,mean)
-RCP.T<-aggregate(TmeanCustom~emissions+per,Future_Means,mean)
+## Aggregate
+RCP.P<-aggregate(DeltaPr~emissions+per,Future_Means,mean)
+RCP.T<-aggregate(DeltaTmean~emissions+per,Future_Means,mean)
 
-Quad.P<-aggregate(PrecipCustom~CF+per,FM_quad,mean)
-Quad.T<-aggregate(TmeanCustom~CF+per,FM_quad,mean)
+Quad.P<-aggregate(DeltaPr~CF+per,FM_quad,mean)
+Quad.T<-aggregate(DeltaTmean~CF+per,FM_quad,mean)
 
-Indiv.P<-aggregate(PrecipCustom~GCM+per,FM_indiv,mean)
-Indiv.T<-aggregate(TmeanCustom~GCM+per,FM_indiv,mean)
+Indiv.P<-aggregate(DeltaPr~GCM+per,FM_indiv,mean)
+Indiv.T<-aggregate(DeltaTmean~GCM+per,FM_indiv,mean)
 
-R1<-
-R2
-Q1
-Q2
-X1
-X2
-Diffs_table$xx 
+ # Differences
+R.P<-aggregate(Diff~per,with(RCP.P,data.frame(per=per,Diff=
+                                                ifelse(emissions=="RCP 4.5",-1,1)*DeltaPr*365)),sum)
+R.T<-aggregate(Diff~per,with(RCP.T,data.frame(per=per,Diff=
+                                                 ifelse(emissions=="RCP 4.5",-1,1)*DeltaTmean)),sum)
+Q.P<-aggregate(Diff~per,with(Quad.P,data.frame(per=per,Diff=
+                                                ifelse(CF==CF_sub[1],-1,1)*DeltaPr*365)),sum)
+Q.T<-aggregate(Diff~per,with(Quad.T,data.frame(per=per,Diff=
+                                                ifelse(CF==CF_sub[1],-1,1)*DeltaTmean)),sum)
+I.P<-aggregate(Diff~per,with(Indiv.P,data.frame(per=per,Diff=
+                                                 ifelse(GCM==GCM_sub[1],-1,1)*DeltaPr*365)),sum)
+I.T<-aggregate(Diff~per,with(Indiv.T,data.frame(per=per,Diff=
+                                                 ifelse(GCM==GCM_sub[1],-1,1)*DeltaTmean)),sum)
+ # Assign to tables
+TDiff<-Diffs_table
+PDiff<-Diffs_table
+
+TDiff[1,]<-R.T$Diff
+TDiff[2,]<-Q.T$Diff
+TDiff[3,]<-I.T$Diff
+
+PDiff[1,]<-R.P$Diff
+PDiff[2,]<-Q.P$Diff
+PDiff[3,]<-I.P$Diff
+
+################################# TIME-SERIES PLOTS ############################################
+ # Can do RCP and Individual model plots now, need to discuss quadrant plots
+
+  ### By RCP
+Future_all$emissions[grep("rcp85",Future_all$GCM)] = "RCP 8.5"
+Future_all$emissions[grep("rcp45",Future_all$GCM)] = "RCP 4.5"
+FA_R<-aggregate(cbind(PrecipCustom,TavgCustom)~Year+emissions,Future_all,mean)
+FA_R$PrecipCustom<-FA_R$PrecipCustom*365
+FA_R<-subset(FA_R,Year>2019 & Year<2098)
+FA_R$Year<-as.Date(FA_R$Year, format = "%Y")
+FA_R$emissions<-factor(FA_R$emissions,levels = c("RCP 4.5", "RCP 8.5"))
+
+temp<-ggplot(FA_R, aes(x=Year, y=TavgCustom, group=emissions, colour = emissions)) +
+  geom_line(colour = "black",size=2.5, stat = "identity") +
+  geom_line(size = 2, stat = "identity") +
+  geom_point(colour= "black", size=4, aes(fill = factor(emissions), shape = factor(emissions))) +
+  theme(axis.text=element_text(size=16),
+        axis.text.x=element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_text(size=20,vjust=1.0),
+        plot.title=element_text(size=24,hjust=0),
+        legend.text=element_text(size=20), legend.title=element_text(size=20),
+        legend.position = "none") +
+  labs(title = "(A)\nAverage annual temperature by RCP", 
+       x = "Year", y = "Temperature (F)") +
+  scale_color_manual(name="",values = col.RCP2) +
+  scale_fill_manual(name="",values = col.RCP2) +
+  scale_shape_manual(name="",values = c(21,22)) +
+  # scale_y_continuous(limits=c(ceiling(min(ALL2$TavgCustom)), ceiling(max(ALL2$TavgCustom)))) +
+  guides(color=guide_legend(override.aes = list(size=7))) 
+temp
+# ggsave("Long-term_annual_tavg.png", width = 15, height = 9)
+
+pr<-ggplot(FA_R, aes(x=Year, y=PrecipCustom, group=emissions, colour = emissions)) +
+  geom_line(colour = "black",size=2.5, stat = "identity") +
+  geom_line(size = 2, stat = "identity") +
+  geom_point(colour= "black", size=4, aes(fill = factor(emissions), shape = factor(emissions))) +
+  theme(axis.text=element_text(size=16),
+        axis.title.x=element_text(size=16,vjust=-0.2),
+        axis.title.y=element_text(size=20,vjust=1.0),
+        plot.title=element_text(size=24,hjust=0),
+        legend.text=element_text(size=20), legend.title=element_text(size=20),
+        legend.position = "bottom") +
+  labs(title = "(B)\nAverage annual precipitation by RCP", 
+       x = "Year", y = "Precipitation (in)") +
+  scale_color_manual(name="",values = col.RCP2) +
+  scale_fill_manual(name="",values = col.RCP2) +
+  scale_shape_manual(name="",values = c(21,22)) +
+  # scale_y_continuous(limits=c(ceiling(min(ALL2$PrecipCustom)), ceiling(max(ALL2$PrecipCustom)))) +
+  guides(color=guide_legend(override.aes = list(size=7)))
+pr
+# ggsave("Long-term_annual_precip.png", width = 15, height = 9)
+
+grid.arrange(temp,pr, nrow=2)
+
+g <- arrangeGrob(temp,pr, nrow=2)
+ggsave("Long-term_panel-RCP.png", g,width = 15, height = 18)
 
 
+
+### By GCM
+FA_GCM<-subset(Future_all,GCM %in% GCM_sub)
+FA_I<-aggregate(cbind(PrecipCustom,TavgCustom)~Year+GCM,FA_GCM,mean)
+FA_I$PrecipCustom<-FA_I$PrecipCustom*365
+FA_I<-subset(FA_I,Year>2019 & Year<2098)
+FA_I$Year<-as.Date(FA_I$Year, format = "%Y")
+FA_I$GCM<-factor(FA_I$GCM,levels = GCM_sub)
+
+temp<-ggplot(FA_I, aes(x=Year, y=TavgCustom, group=GCM, colour = GCM)) +
+  geom_line(colour = "black",size=2.5, stat = "identity") +
+  geom_line(size = 2, stat = "identity") +
+  geom_point(colour= "black", size=4, aes(fill = factor(GCM), shape = factor(GCM))) +
+  theme(axis.text=element_text(size=16),
+        axis.text.x=element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_text(size=20,vjust=1.0),
+        plot.title=element_text(size=24,hjust=0),
+        legend.text=element_text(size=20), legend.title=element_text(size=20),
+        legend.position = "none") +
+  labs(title = "(A)\nAverage annual temperature by GCM", 
+       x = "Year", y = "Temperature (F)") +
+  scale_color_manual(name="",values = colors2) +
+  scale_fill_manual(name="",values = colors2) +
+  scale_shape_manual(name="",values = c(21,22)) +
+  # scale_y_continuous(limits=c(ceiling(min(ALL2$TavgCustom)), ceiling(max(ALL2$TavgCustom)))) +
+  guides(color=guide_legend(override.aes = list(size=7))) 
+temp
+# ggsave("Long-term_annual_tavg.png", width = 15, height = 9)
+
+pr<-ggplot(FA_I, aes(x=Year, y=PrecipCustom, group=GCM, colour = GCM)) +
+  geom_line(colour = "black",size=2.5, stat = "identity") +
+  geom_line(size = 2, stat = "identity") +
+  geom_point(colour= "black", size=4, aes(fill = factor(GCM), shape = factor(GCM))) +
+  theme(axis.text=element_text(size=16),
+        axis.title.x=element_text(size=16,vjust=-0.2),
+        axis.title.y=element_text(size=20,vjust=1.0),
+        plot.title=element_text(size=24,hjust=0),
+        legend.text=element_text(size=20), legend.title=element_text(size=20),
+        legend.position = "bottom") +
+  labs(title = "(B)\nAverage annual precipitation by GCM", 
+       x = "Year", y = "Precipitation (in)") +
+  scale_color_manual(name="",values = colors2) +
+  scale_fill_manual(name="",values = colors2) +
+  scale_shape_manual(name="",values = c(21,22)) +
+  # scale_y_continuous(limits=c(ceiling(min(ALL2$PrecipCustom)), ceiling(max(ALL2$PrecipCustom)))) +
+  guides(color=guide_legend(override.aes = list(size=7)))
+pr
+# ggsave("Long-term_annual_precip.png", width = 15, height = 9)
+
+grid.arrange(temp,pr, nrow=2)
+
+g <- arrangeGrob(temp,pr, nrow=2)
+ggsave("Long-term_panel-GCM.png", g,width = 15, height = 18)
