@@ -22,6 +22,9 @@ CFHigh = 0.75
 CFs = c("Warm Wet", "Hot Wet", "Central", "Warm Dry", "Hot Dry") #Use spaces and characters only
 Range = 30  #Number of years to summarize (should be at least 30)
 
+CF_sub<-c("Warm Wet","Hot Dry")
+GCM_sub<-c("inmcm4.rcp45", "IPSL-CM5A-MR.rcp85")
+
 col.RCP2 = c("blue", "red")
 
 ### Create DFs for summarizing ###
@@ -268,15 +271,30 @@ dualscatter  + geom_text(aes(label=GCM)) +
 ggsave("2080-Scatter-.png", width = 15, height = 9)
 
 ########################## TIME SERIES
-Future_all = merge(Future_all, CF_GCM, by = c("GCM"),all.x=T)
+
+
 
 ################### Create climate futures ###################################
 Diffs_table<-as.data.frame(matrix(nrow=3,ncol=3))
 row.names(Diffs_table)<-c("RCP","Quad","Indiv")
 names(Diffs_table)<-c("2040","2060","2080")
-FM_sub<-subset(Future_Means,CF %in% c("Warm Wet", "Hot Dry"))
 
-aggregate(PrecipCustom~emissions+per,FM_sub,mean)
+#subset by Quadrant
+FM_quad<-subset(Future_Means,CF %in% CF_sub)
+FM_quad$CF<-factor(FM_quad$CF,levels=CF_sub)
+
+#subset by GCM
+FM_indiv<-subset(Future_Means,GCM %in% GCM_sub)
+FM_indiv$GCM<-factor(FM_indiv$GCM,levels=GCM_sub)
+
+RCP.P<-aggregate(PrecipCustom~emissions+per,Future_Means,mean)
+RCP.T<-aggregate(TmeanCustom~emissions+per,Future_Means,mean)
+
+Quad.P<-aggregate(PrecipCustom~CF+per,FM_quad,mean)
+Quad.T<-aggregate(TmeanCustom~CF+per,FM_quad,mean)
+
+Indiv.P<-aggregate(PrecipCustom~GCM+per,FM_indiv,mean)
+Indiv.T<-aggregate(TmeanCustom~GCM+per,FM_indiv,mean)
 
 R1<-
 R2
