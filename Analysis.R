@@ -13,7 +13,7 @@ library(gridExtra)
 library(grid)
 
 rm(list=ls())
-setwd("C:/Users/achildress/DOI/Schuurman, Gregor W - Assistants_2016 onward/CF Methods article/")
+setwd("C:/Users/achildress/DOI/NPS-CCRP-FC Science Adaptation - Documents/General/Climate Futures ms/Figs/")
 load("BIBE-data.RData")
 
 # Threshold percentages for defining Climate futures. Default low/high:  0.25, 0.75
@@ -23,7 +23,7 @@ CFs = c("Warm Wet", "Hot Wet", "Central", "Warm Dry", "Hot Dry") #Use spaces and
 Range = 30  #Number of years to summarize (should be at least 30)
 
 CF_sub<-c("Warm Wet","Hot Dry")
-GCM_sub<-c("inmcm4.rcp45", "IPSL-CM5A-MR.rcp85")
+GCM_sub<-c("IPSL-CM5A-LR.rcp45", "IPSL-CM5A-MR.rcp85")
 
 col.RCP2 = c("blue", "red")
 col.RCP3 = c("white","blue", "red")
