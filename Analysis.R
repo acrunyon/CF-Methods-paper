@@ -11,10 +11,12 @@ library(reshape2)
 library(zoo)
 library(gridExtra)
 library(grid)
+library(ggrepel)
 
 rm(list=ls())
 setwd("C:/Users/achildress/DOI/NPS-CCRP-FC Science Adaptation - Documents/General/Climate Futures ms/Figs/")
 load("BIBE-data.RData")
+setwd("C:/Users/achildress/DOI/NPS-CCRP-FC Science Adaptation - Documents/General/Climate Futures ms/Figs/v2_200402/")
 
 # Threshold percentages for defining Climate futures. Default low/high:  0.25, 0.75
 CFLow = 0.25     
@@ -199,25 +201,28 @@ dualscatter = ggplot(FM40, aes(DeltaTmean, DeltaPr*365,
                                xmax=quantile(FM40$DeltaTmean,.75), 
                                ymin=quantile(FM40$DeltaPr,.25)*365, 
                                ymax=quantile(FM40$DeltaPr,.75)*365))
-dualscatter  + geom_text(aes(label=GCM)) + 
+A<- dualscatter  + geom_text_repel(aes(label=GCM)) + 
   geom_point(colour="black",size=4) +
   geom_point(aes(color=emissions),size=3.5) +
   theme(axis.text=element_text(size=18),
         axis.title.x=element_text(size=18,vjust=-0.2),
         axis.title.y=element_text(size=18,vjust=0.2),
-        plot.title=element_text(size=18,face="bold",vjust=2,hjust=0.5),
-        legend.text=element_text(size=18), legend.title=element_text(size=16)) + 
+        plot.title=element_text(size=18,face="bold",vjust=2,hjust=0),
+        legend.text=element_text(size=18), legend.title=element_text(size=16),
+        legend.position = "none",
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black")) + 
   ###
-  labs(title ="Changes in climate means centered on 2040 (2025-2055)\n relative to historical period (1950-2000) by GCM run", 
-            x = "Changes in annual average temperature (F)", # Change
-            y = "Changes in annual average precipitation (in)") + #change
+  labs(title ="A) 2040", 
+       x = " ", # Change
+       y = " ") + #change
   scale_colour_manual(values=col.RCP2)+
   guides(color=guide_legend(title="Emissions\nScenarios\n")) +
   geom_rect(color = "black", alpha=0) + 
   geom_hline(aes(yintercept=mean(DeltaPr*365)),linetype=2) + #change
-  geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) #change
-
-ggsave("2040-Scatter-.png", width = 15, height = 9)
+  geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) + #change
+  scale_x_continuous(limits = c(min(FM40$DeltaTmean), max(FM80$DeltaTmean))) +
+  scale_y_continuous(limits = c((min(FM80$DeltaPr)*365)-.5, (max(FM80$DeltaPr)*365)+.5))
 
 
 # 2060
@@ -226,25 +231,29 @@ dualscatter = ggplot(FM60, aes(DeltaTmean, DeltaPr*365,
                                xmax=quantile(FM60$DeltaTmean,.75), 
                                ymin=quantile(FM60$DeltaPr,.25)*365, 
                                ymax=quantile(FM60$DeltaPr,.75)*365))
-dualscatter  + geom_text(aes(label=GCM)) + 
+B<-dualscatter  + geom_text_repel(aes(label=GCM)) + 
   geom_point(colour="black",size=4) +
   geom_point(aes(color=emissions),size=3.5) +
   theme(axis.text=element_text(size=18),
         axis.title.x=element_text(size=18,vjust=-0.2),
         axis.title.y=element_text(size=18,vjust=0.2),
-        plot.title=element_text(size=18,face="bold",vjust=2,hjust=0.5),
-        legend.text=element_text(size=18), legend.title=element_text(size=16)) + 
+        plot.title=element_text(size=18,face="bold",vjust=2,hjust=0),
+        legend.text=element_text(size=18), legend.title=element_text(size=16),
+        legend.position = "none",
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black")) + 
   ###
-  labs(title ="Changes in climate means centered on 2060 (2045-2075)\n relative to historical period (1950-2000) by GCM run", 
-       x = "Changes in annual average temperature (F)", # Change
-       y = "Changes in annual average precipitation (in)") + #change
+  labs(title ="B) 2060", 
+       x = " ", # Change
+       y = "Annual precipitation change (in)") + #change
   scale_colour_manual(values=col.RCP2)+
   guides(color=guide_legend(title="Emissions\nScenarios\n")) +
   geom_rect(color = "black", alpha=0) + 
   geom_hline(aes(yintercept=mean(DeltaPr*365)),linetype=2) + #change
-  geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) #change
+  geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) +#change
+  scale_x_continuous(limits = c(min(FM40$DeltaTmean), max(FM80$DeltaTmean))) +
+  scale_y_continuous(limits = c((min(FM80$DeltaPr)*365)-.5, (max(FM80$DeltaPr)*365)+.5))
 
-ggsave("2060-Scatter-.png", width = 15, height = 9)
 
 # 2080
 dualscatter = ggplot(FM80, aes(DeltaTmean, DeltaPr*365, 
@@ -252,25 +261,34 @@ dualscatter = ggplot(FM80, aes(DeltaTmean, DeltaPr*365,
                                xmax=quantile(FM80$DeltaTmean,.75), 
                                ymin=quantile(FM80$DeltaPr,.25)*365, 
                                ymax=quantile(FM80$DeltaPr,.75)*365))
-dualscatter  + geom_text(aes(label=GCM)) + 
+C<-dualscatter  + geom_text_repel(aes(label=GCM)) + 
   geom_point(colour="black",size=4) +
   geom_point(aes(color=emissions),size=3.5) +
   theme(axis.text=element_text(size=18),
         axis.title.x=element_text(size=18,vjust=-0.2),
         axis.title.y=element_text(size=18,vjust=0.2),
-        plot.title=element_text(size=18,face="bold",vjust=2,hjust=0.5),
-        legend.text=element_text(size=18), legend.title=element_text(size=16)) + 
+        plot.title=element_text(size=18,face="bold",vjust=2,hjust=0),
+        legend.text=element_text(size=18), legend.title=element_text(size=16),
+        legend.position = "bottom",
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black")) + 
   ###
-  labs(title ="Changes in climate means centered on 2080 (2065-2095)\n relative to historical period (1950-2000) by GCM run", 
-       x = "Changes in annual average temperature (F)", # Change
-       y = "Changes in annual average precipitation (in)") + #change
+  labs(title ="C) 2080", 
+       x = "Annual temperature change (F)", # Change
+       y = " ") + #change
   scale_colour_manual(values=col.RCP2)+
-  guides(color=guide_legend(title="Emissions\nScenarios\n")) +
+  guides(color=guide_legend(title="Emissions Scenarios ")) +
   geom_rect(color = "black", alpha=0) + 
   geom_hline(aes(yintercept=mean(DeltaPr*365)),linetype=2) + #change
-  geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) #change
+  geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) + #change
+  scale_x_continuous(limits = c(min(FM40$DeltaTmean), max(FM80$DeltaTmean))) +
+  scale_y_continuous(limits = c((min(FM80$DeltaPr)*365)-.5, (max(FM80$DeltaPr)*365)+.5))
 
-ggsave("2080-Scatter-.png", width = 15, height = 9)
+
+grid.arrange(A,B,C, nrow=3)
+
+g <- arrangeGrob(A,B,C, nrow=3)
+ggsave("Scatter_pannel.png", g,width = 15, height = 15)
 
 ########################## TIME SERIES
 
@@ -336,7 +354,19 @@ FA_R<-subset(FA_R,Year>2019 & Year<2098)
 FA_R$Year<-as.Date(FA_R$Year, format = "%Y")
 FA_R$emissions<-factor(FA_R$emissions,levels = c("RCP 4.5", "RCP 8.5"))
 
-temp<-ggplot(FA_R, aes(x=Year, y=TavgCustom, group=emissions, colour = emissions)) +
+  # RCP shading
+RTemp<-aggregate(TavgCustom~Year,FA_R,min);colnames(RTemp)[2]<-"Tymin"
+RTemp2<-aggregate(TavgCustom~Year,FA_R,max);colnames(RTemp2)[2]<-"Tymax"
+RTemp<-merge(RTemp,RTemp2,by="Year");rm(RTemp2)
+FA_R<-merge(FA_R,RTemp,by="Year",all.x = T)
+
+RPr<-aggregate(PrecipCustom~Year,FA_R,min);colnames(RPr)[2]<-"Pymin"
+RPr2<-aggregate(PrecipCustom~Year,FA_R,max);colnames(RPr2)[2]<-"Pymax"
+RPr<-merge(RPr,RPr2,by="Year");rm(RPr2)
+FA_R<-merge(FA_R,RPr,by="Year",all.x = T)
+
+a<-ggplot(FA_R, aes(x=Year, y=TavgCustom, group=emissions, colour = emissions)) +
+  geom_ribbon(aes(x=Year,ymin=Tymin,ymax=Tymax), fill="grey",colour="white") +
   geom_line(colour = "black",size=2.5, stat = "identity") +
   geom_line(size = 2, stat = "identity") +
   geom_point(colour= "black", size=4, aes(fill = factor(emissions), shape = factor(emissions))) +
@@ -346,18 +376,20 @@ temp<-ggplot(FA_R, aes(x=Year, y=TavgCustom, group=emissions, colour = emissions
         axis.title.y=element_text(size=20,vjust=1.0),
         plot.title=element_text(size=24,hjust=0),
         legend.text=element_text(size=20), legend.title=element_text(size=20),
-        legend.position = "none") +
-  labs(title = "(A)\nAverage annual temperature by RCP", 
+        legend.position = "none",
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black")) + 
+  labs(title = "A) RCP", 
        x = "Year", y = "Temperature (F)") +
   scale_color_manual(name="",values = col.RCP2) +
   scale_fill_manual(name="",values = col.RCP2) +
   scale_shape_manual(name="",values = c(21,22)) +
-  # scale_y_continuous(limits=c(ceiling(min(ALL2$TavgCustom)), ceiling(max(ALL2$TavgCustom)))) +
-  guides(color=guide_legend(override.aes = list(size=7))) 
-temp
-# ggsave("Long-term_annual_tavg.png", width = 15, height = 9)
+  scale_y_continuous(limits=c(min(FA_I$TavgCustom), max(FA_I$TavgCustom))) +
+  guides(color=guide_legend(override.aes = list(size=7)))  
+a
 
-pr<-ggplot(FA_R, aes(x=Year, y=PrecipCustom, group=emissions, colour = emissions)) +
+b<-ggplot(FA_R, aes(x=Year, y=PrecipCustom, group=emissions, colour = emissions)) +
+  geom_ribbon(aes(x=Year,ymin=Pymin,ymax=Pymax), fill="grey",colour="white") +
   geom_line(colour = "black",size=2.5, stat = "identity") +
   geom_line(size = 2, stat = "identity") +
   geom_point(colour= "black", size=4, aes(fill = factor(emissions), shape = factor(emissions))) +
@@ -366,22 +398,17 @@ pr<-ggplot(FA_R, aes(x=Year, y=PrecipCustom, group=emissions, colour = emissions
         axis.title.y=element_text(size=20,vjust=1.0),
         plot.title=element_text(size=24,hjust=0),
         legend.text=element_text(size=20), legend.title=element_text(size=20),
-        legend.position = "bottom") +
-  labs(title = "(B)\nAverage annual precipitation by RCP", 
+        legend.position = "bottom",
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black")) + 
+  labs(title = "B) RCP", 
        x = "Year", y = "Precipitation (in)") +
   scale_color_manual(name="",values = col.RCP2) +
   scale_fill_manual(name="",values = col.RCP2) +
   scale_shape_manual(name="",values = c(21,22)) +
-  # scale_y_continuous(limits=c(ceiling(min(ALL2$PrecipCustom)), ceiling(max(ALL2$PrecipCustom)))) +
+  scale_y_continuous(limits=c(min(FA_I$PrecipCustom), max(FA_I$PrecipCustom))) +
   guides(color=guide_legend(override.aes = list(size=7)))
-pr
-# ggsave("Long-term_annual_precip.png", width = 15, height = 9)
-
-grid.arrange(temp,pr, nrow=2)
-
-g <- arrangeGrob(temp,pr, nrow=2)
-ggsave("Long-term_panel-RCP.png", g,width = 15, height = 18)
-
+b
 
 
 ### By GCM
@@ -392,7 +419,19 @@ FA_I<-subset(FA_I,Year>2019 & Year<2098)
 FA_I$Year<-as.Date(FA_I$Year, format = "%Y")
 FA_I$GCM<-factor(FA_I$GCM,levels = GCM_sub)
 
-temp<-ggplot(FA_I, aes(x=Year, y=TavgCustom, group=GCM, colour = GCM)) +
+# GCM shading
+ITemp<-aggregate(TavgCustom~Year,FA_I,min);colnames(ITemp)[2]<-"Tymin"
+ITemp2<-aggregate(TavgCustom~Year,FA_I,max);colnames(ITemp2)[2]<-"Tymax"
+ITemp<-merge(ITemp,ITemp2,by="Year");rm(ITemp2)
+FA_I<-merge(FA_I,ITemp,by="Year",all.x = T)
+
+IPr<-aggregate(PrecipCustom~Year,FA_I,min);colnames(IPr)[2]<-"Pymin"
+IPr2<-aggregate(PrecipCustom~Year,FA_I,max);colnames(IPr2)[2]<-"Pymax"
+IPr<-merge(IPr,IPr2,by="Year");rm(IPr2)
+FA_I<-merge(FA_I,IPr,by="Year",all.x = T)
+
+c<-ggplot(FA_I, aes(x=Year, y=TavgCustom, group=GCM, colour = GCM)) +
+  geom_ribbon(aes(x=Year,ymin=Tymin,ymax=Tymax), fill="grey",colour="white") +
   geom_line(colour = "black",size=2.5, stat = "identity") +
   geom_line(size = 2, stat = "identity") +
   geom_point(colour= "black", size=4, aes(fill = factor(GCM), shape = factor(GCM))) +
@@ -402,18 +441,20 @@ temp<-ggplot(FA_I, aes(x=Year, y=TavgCustom, group=GCM, colour = GCM)) +
         axis.title.y=element_text(size=20,vjust=1.0),
         plot.title=element_text(size=24,hjust=0),
         legend.text=element_text(size=20), legend.title=element_text(size=20),
-        legend.position = "none") +
-  labs(title = "(A)\nAverage annual temperature by GCM", 
-       x = "Year", y = "Temperature (F)") +
+        legend.position = "none",
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black")) + 
+  labs(title = "C) Individual models", 
+       x = "Year", y = " ") +
   scale_color_manual(name="",values = colors2) +
   scale_fill_manual(name="",values = colors2) +
   scale_shape_manual(name="",values = c(21,22)) +
-  # scale_y_continuous(limits=c(ceiling(min(ALL2$TavgCustom)), ceiling(max(ALL2$TavgCustom)))) +
+  scale_y_continuous(limits=c(min(FA_I$TavgCustom), max(FA_I$TavgCustom))) +
   guides(color=guide_legend(override.aes = list(size=7))) 
-temp
-# ggsave("Long-term_annual_tavg.png", width = 15, height = 9)
+c
 
-pr<-ggplot(FA_I, aes(x=Year, y=PrecipCustom, group=GCM, colour = GCM)) +
+d<-ggplot(FA_I, aes(x=Year, y=PrecipCustom, group=GCM, colour = GCM)) +
+  geom_ribbon(aes(x=Year,ymin=Pymin,ymax=Pymax), fill="grey",colour="white") +
   geom_line(colour = "black",size=2.5, stat = "identity") +
   geom_line(size = 2, stat = "identity") +
   geom_point(colour= "black", size=4, aes(fill = factor(GCM), shape = factor(GCM))) +
@@ -422,18 +463,19 @@ pr<-ggplot(FA_I, aes(x=Year, y=PrecipCustom, group=GCM, colour = GCM)) +
         axis.title.y=element_text(size=20,vjust=1.0),
         plot.title=element_text(size=24,hjust=0),
         legend.text=element_text(size=20), legend.title=element_text(size=20),
-        legend.position = "bottom") +
-  labs(title = "(B)\nAverage annual precipitation by GCM", 
-       x = "Year", y = "Precipitation (in)") +
+        legend.position = "bottom",
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black")) + 
+  labs(title = "D) Individual models", 
+       x = "Year", y = " ") +
   scale_color_manual(name="",values = colors2) +
   scale_fill_manual(name="",values = colors2) +
   scale_shape_manual(name="",values = c(21,22)) +
-  # scale_y_continuous(limits=c(ceiling(min(ALL2$PrecipCustom)), ceiling(max(ALL2$PrecipCustom)))) +
+  scale_y_continuous(limits=c(min(FA_I$PrecipCustom), max(FA_I$PrecipCustom))) +
   guides(color=guide_legend(override.aes = list(size=7)))
-pr
-# ggsave("Long-term_annual_precip.png", width = 15, height = 9)
+d
 
-grid.arrange(temp,pr, nrow=2)
+grid.arrange(a,c,b,d, nrow=2,ncol=2)
 
-g <- arrangeGrob(temp,pr, nrow=2)
-ggsave("Long-term_panel-GCM.png", g,width = 15, height = 18)
+g <- arrangeGrob(a,c,b,d, nrow=2,ncol=2)
+ggsave("Long-term_panel.png", g,width = 30, height = 20)
