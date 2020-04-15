@@ -236,7 +236,7 @@ dualscatter + geom_text(aes(label=GCM)) +
 
 ggsave("2040-Scatter-.png", width = 15, height = 9)
 
-# Figure 2 time-slice panel
+# Figure 2 time-slice panel -- WITH MODEL NAMES
 # 2040
 dualscatter = ggplot(FM40, aes(DeltaTmean, DeltaPr*365, 
                                xmin=quantile(FM40$DeltaTmean,.25), 
@@ -337,8 +337,105 @@ grid.arrange(A,B,C, nrow=3)
 g <- arrangeGrob(A,B,C, nrow=3)
 ggsave("Scatter_pannel.png", g,width = 10, height = 12)
 
-########################## TIME SERIES
+# Figure 2 time-slice panel -- NO NAMES
+# 2040
+dualscatter = ggplot(FM40, aes(DeltaTmean, DeltaPr*365, 
+                               xmin=quantile(FM40$DeltaTmean,.25), 
+                               xmax=quantile(FM40$DeltaTmean,.75), 
+                               ymin=quantile(FM40$DeltaPr,.25)*365, 
+                               ymax=quantile(FM40$DeltaPr,.75)*365))
+A<- dualscatter  + geom_point(colour="black",size=4) +
+  geom_point(aes(color=emissions),size=3.5) +
+  theme(axis.text=element_text(size=18),
+        axis.text.x=element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_text(size=18,vjust=0.2),
+        plot.title=element_text(size=18,face="bold",vjust=2,hjust=0),
+        legend.text=element_text(size=18), legend.title=element_blank(),
+        legend.position = c(.9,1),legend.direction = "vertical",legend.text.align = 1,
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"),
+        plot.margin = unit(c(0.2,1,0.2,1), "cm")) + 
+  ###
+  labs(title ="(a) 2040", 
+       x = " ", # Change
+       y = " ") + #change
+  scale_colour_manual(values=col.RCP2)+
+  guides(color=guide_legend(title="")) +
+  geom_rect(color = "black", alpha=0) + 
+  geom_hline(aes(yintercept=mean(DeltaPr*365)),linetype=2) + #change
+  geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) + #change
+  scale_x_continuous(limits = c(min(FM40$DeltaTmean), max(FM80$DeltaTmean))) +
+  scale_y_continuous(limits = c((min(FM80$DeltaPr)*365)-.5, (max(FM80$DeltaPr)*365)+.5))
+A
 
+# 2060
+dualscatter = ggplot(FM60, aes(DeltaTmean, DeltaPr*365, 
+                               xmin=quantile(FM60$DeltaTmean,.25), 
+                               xmax=quantile(FM60$DeltaTmean,.75), 
+                               ymin=quantile(FM60$DeltaPr,.25)*365, 
+                               ymax=quantile(FM60$DeltaPr,.75)*365))
+B<-dualscatter  + geom_point(colour="black",size=4) +
+  geom_point(aes(color=emissions),size=3.5) +
+  theme(axis.text=element_text(size=18),
+        axis.text.x=element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_text(size=18,vjust=0.2),
+        plot.title=element_text(size=18,face="bold",vjust=2,hjust=0),
+        legend.text=element_text(size=18), legend.title=element_text(size=16),
+        legend.position = "none",
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"),
+        plot.margin = unit(c(0.2,1,0.2,1), "cm")) + 
+  ###
+  labs(title ="(b) 2060", 
+       x = " ", # Change
+       y = "Annual precipitation change (mm)") + #change
+  scale_colour_manual(values=col.RCP2)+
+  guides(color=guide_legend(title="Emissions\nScenarios\n")) +
+  geom_rect(color = "black", alpha=0) + 
+  geom_hline(aes(yintercept=mean(DeltaPr*365)),linetype=2) + #change
+  geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) +#change
+  scale_x_continuous(limits = c(min(FM40$DeltaTmean), max(FM80$DeltaTmean))) +
+  scale_y_continuous(limits = c((min(FM80$DeltaPr)*365)-.5, (max(FM80$DeltaPr)*365)+.5))
+
+
+# 2080
+dualscatter = ggplot(FM80, aes(DeltaTmean, DeltaPr*365, 
+                               xmin=quantile(FM80$DeltaTmean,.25), 
+                               xmax=quantile(FM80$DeltaTmean,.75), 
+                               ymin=quantile(FM80$DeltaPr,.25)*365, 
+                               ymax=quantile(FM80$DeltaPr,.75)*365))
+C<-dualscatter  + geom_point(colour="black",size=4) +
+  geom_point(aes(color=emissions),size=3.5) +
+  theme(axis.text=element_text(size=18),
+        axis.title.x=element_text(size=18,vjust=-0.2),
+        axis.title.y=element_text(size=18,vjust=0.2),
+        plot.title=element_text(size=18,face="bold",vjust=2,hjust=0),
+        legend.text=element_text(size=18), legend.title=element_text(size=16),
+        legend.position = "none",
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"),
+        plot.margin = unit(c(0.2,1,0.2,1), "cm")) + 
+  ###
+  labs(title ="(c) 2080", 
+       x = "Annual temperature change (C)", # Change
+       y = " ") + #change
+  scale_colour_manual(values=col.RCP2)+
+  guides(color=guide_legend(title="Emissions Scenarios ")) +
+  geom_rect(color = "black", alpha=0) + 
+  geom_hline(aes(yintercept=mean(DeltaPr*365)),linetype=2) + #change
+  geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) + #change
+  scale_x_continuous(limits = c(min(FM40$DeltaTmean), max(FM80$DeltaTmean))) +
+  scale_y_continuous(limits = c((min(FM80$DeltaPr)*365)-.5, (max(FM80$DeltaPr)*365)+.5))
+
+
+grid.arrange(A,B,C, nrow=3)
+
+g <- arrangeGrob(A,B,C, nrow=3)
+ggsave("Scatter_pannel-NO_NAMES.png", g,width = 10, height = 12)
+
+########################## TIME SERIES
 
 
 ################### Create climate futures ###################################
