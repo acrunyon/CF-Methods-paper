@@ -26,7 +26,7 @@ CFs = c("Warm Wet", "Hot Wet", "Central", "Warm Dry", "Hot Dry") #Use spaces and
 Range = 30  #Number of years to summarize (should be at least 30)
 
 CF_sub<-c("Warm Wet","Hot Dry")
-GCM_sub<-c("IPSL-CM5A-LR.rcp45", "IPSL-CM5A-MR.rcp85")
+GCM_sub<-c("inmcm4.rcp45", "IPSL-CM5A-MR.rcp85")
 
 col.RCP2 = c("blue", "red")
 col.RCP3 = c("white","blue", "red")
@@ -213,7 +213,7 @@ dualscatter = ggplot(FM40, aes(DeltaTmean, DeltaPr*365,
                                xmax=quantile(FM40$DeltaTmean,.75), 
                                ymin=quantile(FM40$DeltaPr,.25)*365, 
                                ymax=quantile(FM40$DeltaPr,.75)*365))
-dualscatter + geom_text(aes(label=GCM)) + 
+dualscatter + geom_text_repel(aes(label=GCM),size=5) + 
   geom_point(colour="black",size=4) +
   geom_point(aes(color=emissions),size=3.5) +
   theme(axis.text=element_text(size=18),
@@ -627,3 +627,53 @@ grid.arrange(a,c,b,d, nrow=2,ncol=2)
 
 g <- arrangeGrob(a,c,b,d, nrow=2,ncol=2)
 ggsave("Long-term_panel.png", g,width = 18, height = 12)
+
+############################################# DETO PLOTS ####################################
+load("DETO.RData")
+
+t2.annual$me.col<-"b"
+t2.annual$me.col[which(t2.annual$GCM=="Climate Future 1")]<-"w"
+
+a<-ggplot(t2.annual, aes(x=GCM, y=BegGrow, colour=GCM)) + 
+  geom_boxplot(colour="black",aes(fill = factor(GCM)))+ 
+  geom_jitter(shape = 21, size = 5, aes(fill = factor(GCM),colour=factor(me.col)), position=position_jitter(0.2)) +
+  theme(axis.text=element_text(size=20),
+        axis.text.x=element_blank(),
+        axis.title.x=element_blank(),
+        axis.title.y=element_text(size=24,vjust=1.0), 
+        plot.title=element_text(size=26,hjust=0),
+        legend.position = "none",
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black")) +
+  labs(title = "(a)",
+       x = " ", y = "Julian date", colour = "Climate Future") +
+  scale_color_manual(name="",values = c("black","white"),guide=FALSE) +
+  scale_fill_manual(name="",values = colors5)
+dat<-ggplot_build(a)$data[[1]]
+dat1<-dat[1,]
+A<-a + geom_segment(data=dat1, aes(x=xmin, xend=xmax, 
+                                y=middle, yend=middle), colour="grey", size=1)
+
+b<-ggplot(t2.annual, aes(x=GCM, y=HI_mod, colour=GCM)) + 
+  geom_boxplot(colour="black",aes(fill = factor(GCM)))+ 
+  geom_jitter(shape = 21, size = 5, aes(fill = factor(GCM),colour=factor(me.col)), position=position_jitter(0.2)) +
+  theme(axis.text=element_text(size=20),
+        axis.title.x=element_text(size=24,vjust=-0.2),
+        axis.title.y=element_text(size=24,vjust=1.0), 
+        plot.title=element_text(size=26,hjust=0),
+        legend.position = "none",
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black")) +
+  labs(title = "(b)",
+       x = " ", y = "Days", colour = "Climate Future") +
+  scale_color_manual(name="",values = c("black","white"),guide=FALSE) +
+  scale_fill_manual(name="",values = colors5)
+dat<-ggplot_build(b)$data[[1]]
+dat1<-dat[1,]
+B<-b + geom_segment(data=dat1, aes(x=xmin, xend=xmax, 
+                                y=middle, yend=middle), colour="grey", size=1)
+
+grid.arrange(A,B,nrow=2,ncol=1)
+
+g <- arrangeGrob(A,B, nrow=2,ncol=1)
+ggsave("DETO-plots.png", g,width = 18, height = 12)
