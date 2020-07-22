@@ -435,6 +435,108 @@ grid.arrange(A,B,C, nrow=3)
 g <- arrangeGrob(A,B,C, nrow=3)
 ggsave("Scatter_pannel-NO_NAMES.png", g,width = 10, height = 12)
 
+# Figure X - 2080 individual scatterplots for 3 CF methods
+# RCPs
+dualscatter = ggplot(FM40, aes(DeltaTmean, DeltaPr*365, 
+                               xmin=quantile(DeltaTmean,.25), 
+                               xmax=quantile(DeltaTmean,.75), 
+                               ymin=quantile(DeltaPr,.25)*365, 
+                               ymax=quantile(DeltaPr,.75)*365))
+A<- dualscatter + 
+  geom_point(colour="black",size=4) +
+  geom_point(aes(color=emissions),size=3.5) + geom_point(aes(x=mean(DeltaTmean[which(emissions=="RCP 4.5")]), y=mean(365*DeltaPr[which(emissions=="RCP 4.5")])), shape=8, size=10, stroke=4, colour='blue') +
+  geom_point(aes(x=mean(DeltaTmean[which(emissions=="RCP 8.5")]), y=mean(365*DeltaPr[which(emissions=="RCP 8.5")])), shape=8, size=10, stroke=4, colour='red') +
+  theme(axis.text=element_text(size=18),
+        axis.title.x=element_text(size=18,vjust=-0.2),
+        axis.title.y=element_text(size=18,vjust=0.2),
+        plot.title=element_text(size=18,face="bold",vjust=2,hjust=0),
+        legend.text=element_text(size=18), legend.title=element_text(size=16),
+        legend.position = c(.9,1),legend.direction = "vertical",legend.text.align = 1,
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black")) + 
+  ###
+  labs(title =" ", 
+       x = "Changes in annual average temperature (C)", # Change
+       y = "Changes in annual average precipitation (mm)") + #change
+  scale_colour_manual(values=col.RCP2)+
+  guides(color=guide_legend(title="EmissionsScenarios")) +
+  geom_rect(color = "black", alpha=0) + 
+  geom_hline(aes(yintercept=mean(DeltaPr*365)),linetype=2) + #change
+  geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) #change
+A
+
+fm40<-FM40
+'%notin%' <- Negate(`%in%`)
+fm40$CF[which(fm40$CF %notin% CF_sub)]<-NA
+dualscatter = ggplot(fm40, aes(DeltaTmean, DeltaPr*365, 
+                               xmin=quantile(DeltaTmean,.25), 
+                               xmax=quantile(DeltaTmean,.75), 
+                               ymin=quantile(DeltaPr,.25)*365, 
+                               ymax=quantile(DeltaPr,.75)*365))
+B<- dualscatter + 
+  geom_point(colour="black",size=4) +
+  geom_point(colour="gray",size=3.5) + 
+  geom_point(aes(color=CF),size=3.5) + 
+  geom_point(aes(x=mean(DeltaTmean[which(CF=="Warm Wet")]), y=mean(365*DeltaPr[which(CF=="Warm Wet")])), shape=22, size=10, stroke=4, colour='blue') +
+  geom_point(aes(x=mean(DeltaTmean[which(CF=="Hot Dry")]), y=mean(365*DeltaPr[which(CF=="Hot Dry")])), shape=22, size=10, stroke=4, colour='red') +
+  theme(axis.text=element_text(size=18),
+        axis.title.x=element_text(size=18,vjust=-0.2),
+        axis.title.y=element_text(size=18,vjust=0.2),
+        plot.title=element_text(size=18,face="bold",vjust=2,hjust=0),
+        legend.text=element_text(size=18), legend.title=element_text(size=16),
+        legend.position = c(.9,1),legend.direction = "vertical",legend.text.align = 1,
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black")) + 
+  ###
+  labs(title =" ", 
+       x = "Changes in annual average temperature (C)", # Change
+       y = "Changes in annual average precipitation (mm)") + #change
+  scale_colour_manual(values=col.RCP2)+
+  guides(color=guide_legend(title="EmissionsScenarios")) +
+  geom_rect(color = "black", alpha=0) + 
+  geom_hline(aes(yintercept=mean(DeltaPr*365)),linetype=2) + #change
+  geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) #change
+B
+
+
+dualscatter = ggplot(FM40, aes(DeltaTmean, DeltaPr*365, 
+                               xmin=quantile(DeltaTmean,.25), 
+                               xmax=quantile(DeltaTmean,.75), 
+                               ymin=quantile(DeltaPr,.25)*365, 
+                               ymax=quantile(DeltaPr,.75)*365))
+C<- dualscatter + 
+  geom_point(colour="black",size=4) +
+  geom_point(color="grey",size=3.5) + 
+  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub[1])]), y=mean(365*DeltaPr[which(GCM==GCM_sub[1])])), shape=21, size=10, stroke=4, colour='blue') +
+  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub[2])]), y=mean(365*DeltaPr[which(GCM==GCM_sub[2])])), shape=21, size=10, stroke=4, colour='red') +
+  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub[1])]), y=mean(365*DeltaPr[which(GCM==GCM_sub[1])])), shape=20, size=4,  colour='blue') +
+  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub[2])]), y=mean(365*DeltaPr[which(GCM==GCM_sub[2])])), shape=20, size=4,  colour='red') +
+  
+   theme(axis.text=element_text(size=18),
+        axis.title.x=element_text(size=18,vjust=-0.2),
+        axis.title.y=element_text(size=18,vjust=0.2),
+        plot.title=element_text(size=18,face="bold",vjust=2,hjust=0),
+        legend.text=element_text(size=18), legend.title=element_text(size=16),
+        legend.position = c(.9,1),legend.direction = "vertical",legend.text.align = 1,
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black")) + 
+  ###
+  labs(title =" ", 
+       x = "Changes in annual average temperature (C)", # Change
+       y = "Changes in annual average precipitation (mm)") + #change
+  scale_colour_manual(values=col.RCP2)+
+  guides(color=guide_legend(title="EmissionsScenarios")) +
+  geom_rect(color = "black", alpha=0) + 
+  geom_hline(aes(yintercept=mean(DeltaPr*365)),linetype=2) + #change
+  geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) #change
+C
+
+
+g <- ggarrange(A,B,C, nrow=3,common.legend = TRUE,legend="right")
+ggsave(g,"Scatter_pannel.png", g,width = 10, height = 12)
+
+
+
 ########################## TIME SERIES
 
 
