@@ -442,19 +442,16 @@ dualscatter = ggplot(FM40, aes(DeltaTmean, DeltaPr*365,
                                xmax=quantile(DeltaTmean,.75), 
                                ymin=quantile(DeltaPr,.25)*365, 
                                ymax=quantile(DeltaPr,.75)*365))
-A<- dualscatter + geom_text_repel(aes(label=GCM),size=5) +
+A<- dualscatter + geom_text_repel(aes(label=GCM),size=3.5) +
   geom_point(colour="black",size=4) +
   theme(axis.text=element_text(size=18), axis.text.x = element_blank(),
-        axis.title.x=element_text(size=18,vjust=-0.2),
-        axis.title.y=element_text(size=18,vjust=0.2),
+        axis.title = element_blank(),
         plot.title=element_text(size=18,face="bold",vjust=2,hjust=0),
         legend.position = "none",
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black")) + 
   ###
-  labs(title ="(a) Projections", 
-       x = " ", # Change
-       y = " ")  #change
+  labs(title ="(a) Projections")  #change
 A
 
 # RCPs
@@ -468,16 +465,13 @@ B<- dualscatter +
   geom_point(aes(color=emissions),size=3.5) + geom_point(aes(x=mean(DeltaTmean[which(emissions=="RCP 4.5")]), y=mean(365*DeltaPr[which(emissions=="RCP 4.5")])), shape=8, size=10, stroke=4, colour=col.RCP2[1]) +
   geom_point(aes(x=mean(DeltaTmean[which(emissions=="RCP 8.5")]), y=mean(365*DeltaPr[which(emissions=="RCP 8.5")])), shape=8, size=10, stroke=4, colour=col.RCP2[2]) +
   theme(axis.text=element_text(size=18), axis.text.x = element_blank(),
-        axis.title.x=element_text(size=18,vjust=-0.2),
-        axis.title.y=element_text(size=18,vjust=0.2),
+        axis.title = element_blank(),
         plot.title=element_text(size=18,face="bold",vjust=2,hjust=0),
         legend.position = "none",
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black")) + 
   ###
-  labs(title ="(b) RCP", 
-       x = " ", # Change
-       y = " ") + #change
+  labs(title ="(b) RCP") + #change
   scale_colour_manual(values=col.RCP2)+
   guides(color=guide_legend(title=element_blank())) 
 
@@ -498,21 +492,23 @@ C<- dualscatter +
   geom_point(aes(x=mean(DeltaTmean[which(CF=="Warm Wet")]), y=mean(365*DeltaPr[which(CF=="Warm Wet")])), shape=22, size=10, stroke=4, colour=colors2[1]) +
   geom_point(aes(x=mean(DeltaTmean[which(CF=="Hot Dry")]), y=mean(365*DeltaPr[which(CF=="Hot Dry")])), shape=22, size=10, stroke=4, colour=colors2[2]) +
   theme(axis.text=element_text(size=18),axis.text.x = element_blank(),
-        axis.title.x=element_text(size=18,vjust=-0.2),
-        axis.title.y=element_text(size=18,vjust=0.2),
+        axis.title = element_blank(),
         plot.title=element_text(size=18,face="bold",vjust=2,hjust=0),
         legend.position = "none",
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black")) + 
   ###
-  labs(title ="(c) Quadrant ", 
-       x = " ", # Change
-       y = "Changes in annual average precipitation (mm)") + #change
+  labs(title ="(c) Quadrant ") + #change
   scale_colour_manual(values=colors2)+
   guides(color=guide_legend(title=element_blank())) +
   geom_rect(color = "black", alpha=0) + 
   geom_hline(aes(yintercept=mean(DeltaPr*365)),linetype=2) + #change
-  geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) #change
+  geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) + #change
+  # Annotate quadrants
+  annotate("text",x=min(fm40$DeltaTmean),y=min(fm40$DeltaPr)*365,hjust=0,label="Warm Dry",size=6) +
+  annotate("text",x=min(fm40$DeltaTmean),y=max(fm40$DeltaPr)*365,hjust=0,label="Warm Wet",size=6) +
+  annotate("text",x=max(fm40$DeltaTmean),y=min(fm40$DeltaPr)*365,hjust=1,label="Hot Dry",size=6) +
+  annotate("text",x=max(fm40$DeltaTmean),y=max(fm40$DeltaPr)*365,hjust=1,label="Warm Wet",size=6) 
 C
 
 fm40.2<-FM40
@@ -533,26 +529,31 @@ D<- dualscatter +
   geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub[2])]), y=mean(365*DeltaPr[which(GCM==GCM_sub[2])])), shape=20, size=4,  colour=colors2[2]) +
   geom_text_repel(aes(label=label),size=5,point.padding = .5) +
    theme(axis.text=element_text(size=18),
-        axis.title.x=element_text(size=18,vjust=-0.2),
-        axis.title.y=element_text(size=18,vjust=0.2),
+         axis.title = element_blank(),
         plot.title=element_text(size=18,face="bold",vjust=2,hjust=0),
         legend.position = "none",
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black")) + 
   ###
-  labs(title ="(d) Individual projection ", 
-       x = "Changes in annual average temperature (C)", # Change
-       y = " ") + #change
+  labs(title ="(d) Individual projection ") + #change
   scale_colour_manual(values=col.RCP2)+
   guides(color=guide_legend(title=element_blank())) +
   geom_rect(color = "black", alpha=0) + 
   geom_hline(aes(yintercept=mean(DeltaPr*365)),linetype=2) + #change
-  geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) #change
+  geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) + #change
+  # Annotate quadrants
+  annotate("text",x=min(fm40$DeltaTmean),y=min(fm40$DeltaPr)*365,hjust=0,label="Warm Dry",size=6) +
+  annotate("text",x=min(fm40$DeltaTmean),y=max(fm40$DeltaPr)*365,hjust=0,label="Warm Wet",size=6) +
+  annotate("text",x=max(fm40$DeltaTmean),y=(min(fm40$DeltaPr)*365)+20,hjust=1,label="Hot Dry",size=6) +
+  annotate("text",x=max(fm40$DeltaTmean),y=max(fm40$DeltaPr)*365,hjust=1,label="Warm Wet",size=6) 
 D
 
 
-g <- ggarrange(A,B,C,D, nrow=4)
-ggsave(g,"Scatter_pannel.png", g,width = 10, height = 12)
+g <- ggarrange(A,B,C,D, nrow=4,labels="AUTO")
+grid.arrange(g,bottom=textGrob("Annual temperature change (C)",
+                               gp=gpar(fontface="bold", col="black", fontsize=15)),
+                               left=textGrob("Annual precipitation change (mm)", gp=gpar(fontface="bold", col="black", fontsize=15),rot=90))
+ggsave("CF_methods-scatter_pannel.png", g,width = 8, height = 14)
 
 
 
