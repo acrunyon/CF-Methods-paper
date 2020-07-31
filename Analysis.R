@@ -436,13 +436,34 @@ g <- arrangeGrob(A,B,C, nrow=3)
 ggsave("Scatter_pannel-NO_NAMES.png", g,width = 10, height = 12)
 
 # Figure X - 2080 individual scatterplots for 3 CF methods
+# Projection names
+dualscatter = ggplot(FM40, aes(DeltaTmean, DeltaPr*365, 
+                               xmin=quantile(DeltaTmean,.25), 
+                               xmax=quantile(DeltaTmean,.75), 
+                               ymin=quantile(DeltaPr,.25)*365, 
+                               ymax=quantile(DeltaPr,.75)*365))
+A<- dualscatter + geom_text_repel(aes(label=GCM),size=5) +
+  geom_point(colour="black",size=4) +
+  theme(axis.text=element_text(size=18), axis.text.x = element_blank(),
+        axis.title.x=element_text(size=18,vjust=-0.2),
+        axis.title.y=element_text(size=18,vjust=0.2),
+        plot.title=element_text(size=18,face="bold",vjust=2,hjust=0),
+        legend.position = "none",
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black")) + 
+  ###
+  labs(title ="(a) Projections", 
+       x = " ", # Change
+       y = " ")  #change
+A
+
 # RCPs
 dualscatter = ggplot(FM40, aes(DeltaTmean, DeltaPr*365, 
                                xmin=quantile(DeltaTmean,.25), 
                                xmax=quantile(DeltaTmean,.75), 
                                ymin=quantile(DeltaPr,.25)*365, 
                                ymax=quantile(DeltaPr,.75)*365))
-A<- dualscatter + 
+B<- dualscatter + 
   geom_point(colour="black",size=4) +
   geom_point(aes(color=emissions),size=3.5) + geom_point(aes(x=mean(DeltaTmean[which(emissions=="RCP 4.5")]), y=mean(365*DeltaPr[which(emissions=="RCP 4.5")])), shape=8, size=10, stroke=4, colour=col.RCP2[1]) +
   geom_point(aes(x=mean(DeltaTmean[which(emissions=="RCP 8.5")]), y=mean(365*DeltaPr[which(emissions=="RCP 8.5")])), shape=8, size=10, stroke=4, colour=col.RCP2[2]) +
@@ -454,15 +475,13 @@ A<- dualscatter +
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black")) + 
   ###
-  labs(title =" ", 
+  labs(title ="(b) RCP", 
        x = " ", # Change
        y = " ") + #change
   scale_colour_manual(values=col.RCP2)+
-  guides(color=guide_legend(title=element_blank())) +
-  geom_rect(color = "black", alpha=0) + 
-  geom_hline(aes(yintercept=mean(DeltaPr*365)),linetype=2) + #change
-  geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) #change
-A
+  guides(color=guide_legend(title=element_blank())) 
+
+B
 
 fm40<-FM40
 '%notin%' <- Negate(`%in%`)
@@ -472,7 +491,7 @@ dualscatter = ggplot(fm40, aes(DeltaTmean, DeltaPr*365,
                                xmax=quantile(DeltaTmean,.75), 
                                ymin=quantile(DeltaPr,.25)*365, 
                                ymax=quantile(DeltaPr,.75)*365))
-B<- dualscatter + 
+C<- dualscatter + 
   geom_point(colour="black",size=4) +
   geom_point(colour="gray",size=3.5) + 
   geom_point(aes(color=CF),size=3.5) + 
@@ -486,7 +505,7 @@ B<- dualscatter +
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black")) + 
   ###
-  labs(title =" ", 
+  labs(title ="(c) Quadrant ", 
        x = " ", # Change
        y = "Changes in annual average precipitation (mm)") + #change
   scale_colour_manual(values=colors2)+
@@ -494,22 +513,25 @@ B<- dualscatter +
   geom_rect(color = "black", alpha=0) + 
   geom_hline(aes(yintercept=mean(DeltaPr*365)),linetype=2) + #change
   geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) #change
-B
+C
 
-
-dualscatter = ggplot(FM40, aes(DeltaTmean, DeltaPr*365, 
+fm40.2<-FM40
+fm40.2$label<-""
+fm40.2$label[which(fm40.2$GCM %in% GCM_sub[1])]<-GCM_sub[1]
+fm40.2$label[which(fm40.2$GCM %in% GCM_sub[2])]<-GCM_sub[2]
+dualscatter = ggplot(fm40.2, aes(DeltaTmean, DeltaPr*365, 
                                xmin=quantile(DeltaTmean,.25), 
                                xmax=quantile(DeltaTmean,.75), 
                                ymin=quantile(DeltaPr,.25)*365, 
                                ymax=quantile(DeltaPr,.75)*365))
-C<- dualscatter + 
+D<- dualscatter + 
   geom_point(colour="black",size=4) +
   geom_point(color="grey",size=3.5) + 
   geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub[1])]), y=mean(365*DeltaPr[which(GCM==GCM_sub[1])])), shape=21, size=10, stroke=4, colour=colors2[1]) +
   geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub[2])]), y=mean(365*DeltaPr[which(GCM==GCM_sub[2])])), shape=21, size=10, stroke=4, colour=colors2[2]) +
   geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub[1])]), y=mean(365*DeltaPr[which(GCM==GCM_sub[1])])), shape=20, size=4,  colour=colors2[1]) +
   geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub[2])]), y=mean(365*DeltaPr[which(GCM==GCM_sub[2])])), shape=20, size=4,  colour=colors2[2]) +
-  
+  geom_text_repel(aes(label=label),size=5,point.padding = .5) +
    theme(axis.text=element_text(size=18),
         axis.title.x=element_text(size=18,vjust=-0.2),
         axis.title.y=element_text(size=18,vjust=0.2),
@@ -518,7 +540,7 @@ C<- dualscatter +
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black")) + 
   ###
-  labs(title =" ", 
+  labs(title ="(d) Individual projection ", 
        x = "Changes in annual average temperature (C)", # Change
        y = " ") + #change
   scale_colour_manual(values=col.RCP2)+
@@ -526,10 +548,10 @@ C<- dualscatter +
   geom_rect(color = "black", alpha=0) + 
   geom_hline(aes(yintercept=mean(DeltaPr*365)),linetype=2) + #change
   geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) #change
-C
+D
 
 
-g <- ggarrange(A,B,C, nrow=3)
+g <- ggarrange(A,B,C,D, nrow=4)
 ggsave(g,"Scatter_pannel.png", g,width = 10, height = 12)
 
 
