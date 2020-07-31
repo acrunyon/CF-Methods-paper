@@ -13,6 +13,7 @@ library(zoo)
 library(gridExtra)
 library(grid)
 library(ggrepel)
+library(ggpubr)
 
 rm(list=ls())
 setwd("C:/Users/achildress/DOI/NPS-CCRP-FC Science Adaptation - Documents/General/Climate Futures ms/Figs/")
@@ -446,20 +447,19 @@ A<- dualscatter +
   geom_point(colour="black",size=4) +
   geom_point(aes(color=emissions),size=3.5) + geom_point(aes(x=mean(DeltaTmean[which(emissions=="RCP 4.5")]), y=mean(365*DeltaPr[which(emissions=="RCP 4.5")])), shape=8, size=10, stroke=4, colour='blue') +
   geom_point(aes(x=mean(DeltaTmean[which(emissions=="RCP 8.5")]), y=mean(365*DeltaPr[which(emissions=="RCP 8.5")])), shape=8, size=10, stroke=4, colour='red') +
-  theme(axis.text=element_text(size=18),
+  theme(axis.text=element_text(size=18), axis.text.x = element_blank(),
         axis.title.x=element_text(size=18,vjust=-0.2),
         axis.title.y=element_text(size=18,vjust=0.2),
         plot.title=element_text(size=18,face="bold",vjust=2,hjust=0),
-        legend.text=element_text(size=18), legend.title=element_text(size=16),
-        legend.position = c(.9,1),legend.direction = "vertical",legend.text.align = 1,
+        legend.position = "none",
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black")) + 
   ###
   labs(title =" ", 
-       x = "Changes in annual average temperature (C)", # Change
-       y = "Changes in annual average precipitation (mm)") + #change
+       x = " ", # Change
+       y = " ") + #change
   scale_colour_manual(values=col.RCP2)+
-  guides(color=guide_legend(title="EmissionsScenarios")) +
+  guides(color=guide_legend(title=element_blank())) +
   geom_rect(color = "black", alpha=0) + 
   geom_hline(aes(yintercept=mean(DeltaPr*365)),linetype=2) + #change
   geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) #change
@@ -479,20 +479,19 @@ B<- dualscatter +
   geom_point(aes(color=CF),size=3.5) + 
   geom_point(aes(x=mean(DeltaTmean[which(CF=="Warm Wet")]), y=mean(365*DeltaPr[which(CF=="Warm Wet")])), shape=22, size=10, stroke=4, colour='blue') +
   geom_point(aes(x=mean(DeltaTmean[which(CF=="Hot Dry")]), y=mean(365*DeltaPr[which(CF=="Hot Dry")])), shape=22, size=10, stroke=4, colour='red') +
-  theme(axis.text=element_text(size=18),
+  theme(axis.text=element_text(size=18),axis.text.x = element_blank(),
         axis.title.x=element_text(size=18,vjust=-0.2),
         axis.title.y=element_text(size=18,vjust=0.2),
         plot.title=element_text(size=18,face="bold",vjust=2,hjust=0),
-        legend.text=element_text(size=18), legend.title=element_text(size=16),
-        legend.position = c(.9,1),legend.direction = "vertical",legend.text.align = 1,
+        legend.position = "none",
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black")) + 
   ###
   labs(title =" ", 
-       x = "Changes in annual average temperature (C)", # Change
+       x = " ", # Change
        y = "Changes in annual average precipitation (mm)") + #change
   scale_colour_manual(values=col.RCP2)+
-  guides(color=guide_legend(title="EmissionsScenarios")) +
+  guides(color=guide_legend(title=element_blank())) +
   geom_rect(color = "black", alpha=0) + 
   geom_hline(aes(yintercept=mean(DeltaPr*365)),linetype=2) + #change
   geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) #change
@@ -516,23 +515,22 @@ C<- dualscatter +
         axis.title.x=element_text(size=18,vjust=-0.2),
         axis.title.y=element_text(size=18,vjust=0.2),
         plot.title=element_text(size=18,face="bold",vjust=2,hjust=0),
-        legend.text=element_text(size=18), legend.title=element_text(size=16),
-        legend.position = c(.9,1),legend.direction = "vertical",legend.text.align = 1,
+        legend.position = "none",
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black")) + 
   ###
   labs(title =" ", 
        x = "Changes in annual average temperature (C)", # Change
-       y = "Changes in annual average precipitation (mm)") + #change
+       y = " ") + #change
   scale_colour_manual(values=col.RCP2)+
-  guides(color=guide_legend(title="EmissionsScenarios")) +
+  guides(color=guide_legend(title=element_blank())) +
   geom_rect(color = "black", alpha=0) + 
   geom_hline(aes(yintercept=mean(DeltaPr*365)),linetype=2) + #change
   geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) #change
 C
 
 
-g <- ggarrange(A,B,C, nrow=3,common.legend = TRUE,legend="right")
+g <- ggarrange(A,B,C, nrow=3)
 ggsave(g,"Scatter_pannel.png", g,width = 10, height = 12)
 
 
