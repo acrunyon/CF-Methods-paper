@@ -29,9 +29,8 @@ Range = 30  #Number of years to summarize (should be at least 30)
 CF_sub<-c("Warm Wet","Hot Dry")
 GCM_sub<-c("inmcm4.rcp45", "IPSL-CM5A-MR.rcp85")
 
-col.RCP2 = c("blue", "red")
-col.RCP3 = c("white","blue", "red")
-colors2 <- c("#9A9EE5","#E10720")
+col.RCP2 = c("#3030FF","#FFBF00") #medium blue & light orange
+colors2 <- c("#000080","#FA4646") #Navy & light red
 
 ### Create DFs for summarizing ###
 ALL_HIST$Year<-format(ALL_HIST$Date,"%Y")
@@ -445,8 +444,8 @@ dualscatter = ggplot(FM40, aes(DeltaTmean, DeltaPr*365,
                                ymax=quantile(DeltaPr,.75)*365))
 A<- dualscatter + 
   geom_point(colour="black",size=4) +
-  geom_point(aes(color=emissions),size=3.5) + geom_point(aes(x=mean(DeltaTmean[which(emissions=="RCP 4.5")]), y=mean(365*DeltaPr[which(emissions=="RCP 4.5")])), shape=8, size=10, stroke=4, colour='blue') +
-  geom_point(aes(x=mean(DeltaTmean[which(emissions=="RCP 8.5")]), y=mean(365*DeltaPr[which(emissions=="RCP 8.5")])), shape=8, size=10, stroke=4, colour='red') +
+  geom_point(aes(color=emissions),size=3.5) + geom_point(aes(x=mean(DeltaTmean[which(emissions=="RCP 4.5")]), y=mean(365*DeltaPr[which(emissions=="RCP 4.5")])), shape=8, size=10, stroke=4, colour=col.RCP2[1]) +
+  geom_point(aes(x=mean(DeltaTmean[which(emissions=="RCP 8.5")]), y=mean(365*DeltaPr[which(emissions=="RCP 8.5")])), shape=8, size=10, stroke=4, colour=col.RCP2[2]) +
   theme(axis.text=element_text(size=18), axis.text.x = element_blank(),
         axis.title.x=element_text(size=18,vjust=-0.2),
         axis.title.y=element_text(size=18,vjust=0.2),
@@ -477,8 +476,8 @@ B<- dualscatter +
   geom_point(colour="black",size=4) +
   geom_point(colour="gray",size=3.5) + 
   geom_point(aes(color=CF),size=3.5) + 
-  geom_point(aes(x=mean(DeltaTmean[which(CF=="Warm Wet")]), y=mean(365*DeltaPr[which(CF=="Warm Wet")])), shape=22, size=10, stroke=4, colour='blue') +
-  geom_point(aes(x=mean(DeltaTmean[which(CF=="Hot Dry")]), y=mean(365*DeltaPr[which(CF=="Hot Dry")])), shape=22, size=10, stroke=4, colour='red') +
+  geom_point(aes(x=mean(DeltaTmean[which(CF=="Warm Wet")]), y=mean(365*DeltaPr[which(CF=="Warm Wet")])), shape=22, size=10, stroke=4, colour=colors2[1]) +
+  geom_point(aes(x=mean(DeltaTmean[which(CF=="Hot Dry")]), y=mean(365*DeltaPr[which(CF=="Hot Dry")])), shape=22, size=10, stroke=4, colour=colors2[2]) +
   theme(axis.text=element_text(size=18),axis.text.x = element_blank(),
         axis.title.x=element_text(size=18,vjust=-0.2),
         axis.title.y=element_text(size=18,vjust=0.2),
@@ -490,7 +489,7 @@ B<- dualscatter +
   labs(title =" ", 
        x = " ", # Change
        y = "Changes in annual average precipitation (mm)") + #change
-  scale_colour_manual(values=col.RCP2)+
+  scale_colour_manual(values=colors2)+
   guides(color=guide_legend(title=element_blank())) +
   geom_rect(color = "black", alpha=0) + 
   geom_hline(aes(yintercept=mean(DeltaPr*365)),linetype=2) + #change
@@ -506,10 +505,10 @@ dualscatter = ggplot(FM40, aes(DeltaTmean, DeltaPr*365,
 C<- dualscatter + 
   geom_point(colour="black",size=4) +
   geom_point(color="grey",size=3.5) + 
-  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub[1])]), y=mean(365*DeltaPr[which(GCM==GCM_sub[1])])), shape=21, size=10, stroke=4, colour='blue') +
-  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub[2])]), y=mean(365*DeltaPr[which(GCM==GCM_sub[2])])), shape=21, size=10, stroke=4, colour='red') +
-  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub[1])]), y=mean(365*DeltaPr[which(GCM==GCM_sub[1])])), shape=20, size=4,  colour='blue') +
-  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub[2])]), y=mean(365*DeltaPr[which(GCM==GCM_sub[2])])), shape=20, size=4,  colour='red') +
+  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub[1])]), y=mean(365*DeltaPr[which(GCM==GCM_sub[1])])), shape=21, size=10, stroke=4, colour=colors2[1]) +
+  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub[2])]), y=mean(365*DeltaPr[which(GCM==GCM_sub[2])])), shape=21, size=10, stroke=4, colour=colors2[2]) +
+  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub[1])]), y=mean(365*DeltaPr[which(GCM==GCM_sub[1])])), shape=20, size=4,  colour=colors2[1]) +
+  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub[2])]), y=mean(365*DeltaPr[which(GCM==GCM_sub[2])])), shape=20, size=4,  colour=colors2[2]) +
   
    theme(axis.text=element_text(size=18),
         axis.title.x=element_text(size=18,vjust=-0.2),
