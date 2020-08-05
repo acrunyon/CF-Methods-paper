@@ -429,8 +429,9 @@ ggsave("Scatter_pannel-NO_NAMES.png", g,width = 10, height = 12)
 
 
 ################### Create climate futures ###################################
-Diffs_table<-as.data.frame(matrix(nrow=3,ncol=3))
-row.names(Diffs_table)<-c("RCP","Quad","Indiv")
+Diffs_table<-as.data.frame(matrix(nrow=9,ncol=3))
+
+row.names(Diffs_table)<-c("RCP8.5","RCP4.5","RCP_range",CF_sub[2],CF_sub[1],"Quad_range",GCM_sub[2],GCM_sub[1],"Indiv_range")
 names(Diffs_table)<-c("2040","2060","2080")
 
 #subset by Quadrant
@@ -442,40 +443,60 @@ FM_indiv<-subset(Future_Means,GCM %in% GCM_sub)
 FM_indiv$GCM<-factor(FM_indiv$GCM,levels=GCM_sub)
 
 ## Aggregate
-RCP.P<-aggregate(DeltaPr~emissions+per,Future_Means,mean)
-RCP.T<-aggregate(DeltaTmean~emissions+per,Future_Means,mean)
+RCP.P<-aggregate(Precip_mm~emissions+per,Future_Means,mean)
+RCP.T<-aggregate(Tmean_C~emissions+per,Future_Means,mean)
 
-Quad.P<-aggregate(DeltaPr~CF+per,FM_quad,mean)
-Quad.T<-aggregate(DeltaTmean~CF+per,FM_quad,mean)
+Quad.P<-aggregate(Precip_mm~CF+per,FM_quad,mean)
+Quad.T<-aggregate(Tmean_C~CF+per,FM_quad,mean)
 
-Indiv.P<-aggregate(DeltaPr~GCM+per,FM_indiv,mean)
-Indiv.T<-aggregate(DeltaTmean~GCM+per,FM_indiv,mean)
+Indiv.P<-aggregate(Precip_mm~GCM+per,FM_indiv,mean)
+Indiv.T<-aggregate(Tmean_C~GCM+per,FM_indiv,mean)
 
- # Differences
-R.P<-aggregate(Diff~per,with(RCP.P,data.frame(per=per,Diff=
-                                                ifelse(emissions=="RCP 4.5",-1,1)*DeltaPr*365)),sum)
-R.T<-aggregate(Diff~per,with(RCP.T,data.frame(per=per,Diff=
-                                                 ifelse(emissions=="RCP 4.5",-1,1)*DeltaTmean)),sum)
-Q.P<-aggregate(Diff~per,with(Quad.P,data.frame(per=per,Diff=
-                                                ifelse(CF==CF_sub[1],-1,1)*DeltaPr*365)),sum)
-Q.T<-aggregate(Diff~per,with(Quad.T,data.frame(per=per,Diff=
-                                                ifelse(CF==CF_sub[1],-1,1)*DeltaTmean)),sum)
-I.P<-aggregate(Diff~per,with(Indiv.P,data.frame(per=per,Diff=
-                                                 ifelse(GCM==GCM_sub[1],-1,1)*DeltaPr*365)),sum)
-I.T<-aggregate(Diff~per,with(Indiv.T,data.frame(per=per,Diff=
-                                                 ifelse(GCM==GCM_sub[1],-1,1)*DeltaTmean)),sum)
- # Assign to tables
+# Reformat tables
+rcp_t<-dcast(RCP.T,emissions~per)
+rownames(rcp_t)<-rcp_t[,1];rcp_t<-rcp_t[,-1]
+quad_t<-dcast(Quad.T,CF~per)
+rownames(quad_t)<-quad_t[,1];quad_t<-quad_t[,-1]
+indiv_t<-dcast(Indiv.T,GCM~per)
+rownames(indiv_t)<-indiv_t[,1];indiv_t<-indiv_t[,-1]
+indiv_t;GCM_sub #make sure ordering correct
+
+rcp_p<-dcast(RCP.P,emissions~per)
+rownames(rcp_p)<-rcp_p[,1];rcp_p<-rcp_p[,-1]
+quad_p<-dcast(Quad.P,CF~per)
+rownames(quad_p)<-quad_p[,1];quad_p<-quad_p[,-1]
+indiv_p<-dcast(Indiv.P,GCM~per)
+rownames(indiv_p)<-indiv_p[,1];indiv_p<-indiv_p[,-1]
+
+# Assign to tables
 TDiff<-Diffs_table
 PDiff<-Diffs_table
 
-TDiff[1,]<-R.T$Diff
-TDiff[2,]<-Q.T$Diff
-TDiff[3,]<-I.T$Diff
+TDiff[1,]<-rcp_t[2,]
+TDiff[2,]<-rcp_t[1,]
+TDiff[4,]<-quad_t[2,]
+TDiff[5,]<-quad_t[1,]
+TDiff[7,]<-indiv_t[2,]
+TDiff[8,]<-indiv_t[1,]
+TDiff<-round(TDiff,digits=2) #rounding in middle avoids rounding errors after subtracting
+TDiff[3,]<-abs(TDiff[1,]-TDiff[2,])
+TDiff[6,]<-abs(TDiff[4,]-TDiff[5,])
+TDiff[9,]<-abs(TDiff[7,]-TDiff[8,])
 
-PDiff[1,]<-R.P$Diff
-PDiff[2,]<-Q.P$Diff
-PDiff[3,]<-I.P$Diff
+PDiff[1,]<-rcp_p[2,]
+PDiff[2,]<-rcp_p[1,]
+PDiff[4,]<-quad_p[2,]
+PDiff[5,]<-quad_p[1,]
+PDiff[7,]<-indiv_p[2,]
+PDiff[8,]<-indiv_p[1,]
+PDiff<-PDiff*365
+PDiff<-round(PDiff,digits=2) #rounding in middle avoids rounding errors after subtracting
+PDiff[3,]<-abs(PDiff[1,]-PDiff[2,])
+PDiff[6,]<-abs(PDiff[4,]-PDiff[5,])
+PDiff[9,]<-abs(PDiff[7,]-PDiff[8,])
 
+write.csv(TDiff,"T_DiffsTable.csv",row.names = T)
+write.csv(PDiff,"P_DiffsTable.csv",row.names = T)
 ################################# TIME-SERIES PLOTS ############################################
  # Can do RCP and Individual model plots now, need to discuss quadrant plots
 
