@@ -425,9 +425,6 @@ grid.arrange(A,B,C, nrow=3)
 g <- arrangeGrob(A,B,C, nrow=3)
 ggsave("Scatter_pannel-NO_NAMES.png", g,width = 10, height = 12)
 
-
-
-
 ########################## TIME SERIES
 
 
