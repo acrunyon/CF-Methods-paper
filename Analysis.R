@@ -238,7 +238,8 @@ B<- dualscatter +
   theme(axis.text=element_text(size=18), axis.text.x = element_blank(),
         axis.title = element_blank(),
         plot.title=element_text(size=18,face="bold",vjust=2,hjust=0),
-        legend.position = "none",
+        legend.text=element_text(size=18), legend.title=element_text(size=16),
+        legend.position = c(.9,1),legend.direction = "vertical",legend.text.align = 1,
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black")) + 
   ###
@@ -279,7 +280,7 @@ C<- dualscatter +
   annotate("text",x=min(fm40$DeltaTmean),y=min(fm40$DeltaPr)*365,hjust=0,label="Warm Dry",size=6) +
   annotate("text",x=min(fm40$DeltaTmean),y=max(fm40$DeltaPr)*365,hjust=0,label="Warm Wet",size=6) +
   annotate("text",x=max(fm40$DeltaTmean),y=min(fm40$DeltaPr)*365,hjust=1,label="Hot Dry",size=6) +
-  annotate("text",x=max(fm40$DeltaTmean),y=max(fm40$DeltaPr)*365,hjust=1,label="Warm Wet",size=6) 
+  annotate("text",x=max(fm40$DeltaTmean),y=max(fm40$DeltaPr)*365,hjust=1,label="Hot Wet",size=6) 
 C
 
 fm40.2<-FM40
@@ -316,7 +317,7 @@ D<- dualscatter +
   annotate("text",x=min(fm40$DeltaTmean),y=min(fm40$DeltaPr)*365,hjust=0,label="Warm Dry",size=6) +
   annotate("text",x=min(fm40$DeltaTmean),y=max(fm40$DeltaPr)*365,hjust=0,label="Warm Wet",size=6) +
   annotate("text",x=max(fm40$DeltaTmean),y=(min(fm40$DeltaPr)*365)+20,hjust=1,label="Hot Dry",size=6) +
-  annotate("text",x=max(fm40$DeltaTmean),y=max(fm40$DeltaPr)*365,hjust=1,label="Warm Wet",size=6) 
+  annotate("text",x=max(fm40$DeltaTmean),y=max(fm40$DeltaPr)*365,hjust=1,label="Hot Wet",size=6) 
 D
 
 
@@ -356,7 +357,9 @@ A<- dualscatter  + geom_point(colour="black",size=4) +
   geom_hline(aes(yintercept=mean(DeltaPr*365)),linetype=2) + #change
   geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) + #change
   scale_x_continuous(limits = c(min(FM40$DeltaTmean), max(FM80$DeltaTmean))) +
-  scale_y_continuous(limits = c((min(FM80$DeltaPr)*365)-.5, (max(FM80$DeltaPr)*365)+.5))
+  scale_y_continuous(limits = c((min(FM80$DeltaPr)*365)-.5, (max(FM80$DeltaPr)*365)+.5)) +
+  annotate("text",x=min(FM40$DeltaTmean),y=max(FM80$DeltaPr)*365,hjust=0,label="Warm Wet",size=6) +
+  annotate("text",x=max(FM80$DeltaTmean),y=(min(FM80$DeltaPr)*365),hjust=1,label="Hot Dry",size=6)  
 A
 
 # 2060
@@ -387,7 +390,9 @@ B<-dualscatter  + geom_point(colour="black",size=4) +
   geom_hline(aes(yintercept=mean(DeltaPr*365)),linetype=2) + #change
   geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) +#change
   scale_x_continuous(limits = c(min(FM40$DeltaTmean), max(FM80$DeltaTmean))) +
-  scale_y_continuous(limits = c((min(FM80$DeltaPr)*365)-.5, (max(FM80$DeltaPr)*365)+.5))
+  scale_y_continuous(limits = c((min(FM80$DeltaPr)*365)-.5, (max(FM80$DeltaPr)*365)+.5)) +
+  annotate("text",x=min(FM40$DeltaTmean),y=max(FM80$DeltaPr)*365,hjust=0,label="Warm Wet",size=6) +
+  annotate("text",x=max(FM80$DeltaTmean),y=(min(FM80$DeltaPr)*365),hjust=1,label="Hot Dry",size=6) 
 
 
 # 2080
@@ -417,8 +422,10 @@ C<-dualscatter  + geom_point(colour="black",size=4) +
   geom_hline(aes(yintercept=mean(DeltaPr*365)),linetype=2) + #change
   geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) + #change
   scale_x_continuous(limits = c(min(FM40$DeltaTmean), max(FM80$DeltaTmean))) +
-  scale_y_continuous(limits = c((min(FM80$DeltaPr)*365)-.5, (max(FM80$DeltaPr)*365)+.5))
-
+  scale_y_continuous(limits = c((min(FM80$DeltaPr)*365)-.5, (max(FM80$DeltaPr)*365)+.5)) +
+  annotate("text",x=min(FM40$DeltaTmean),y=max(FM80$DeltaPr)*365,hjust=0,label="Warm Wet",size=6) +
+  annotate("text",x=max(FM80$DeltaTmean),y=(min(FM80$DeltaPr)*365),hjust=1,label="Hot Dry",size=6) 
+C
 
 grid.arrange(A,B,C, nrow=3)
 
