@@ -18,7 +18,7 @@ library(ggpubr)
 rm(list=ls())
 setwd("C:/Users/achildress/DOI/NPS-CCRP-FC Science Adaptation - Documents/General/Climate Futures ms/Figs/")
 load("BIBE-data.RData")
-setwd("C:/Users/achildress/DOI/NPS-CCRP-FC Science Adaptation - Documents/General/Climate Futures ms/Figs/v4_200805/")
+setwd("C:/Users/achildress/DOI/NPS-CCRP-FC Science Adaptation - Documents/General/Climate Futures ms/Figs/v5_200919/")
 
 # Threshold percentages for defining Climate futures. Default low/high:  0.25, 0.75
 CFLow = 0.25     
@@ -27,7 +27,9 @@ CFs = c("Warm Wet", "Hot Wet", "Central", "Warm Dry", "Hot Dry") #Use spaces and
 Range = 30  #Number of years to summarize (should be at least 30)
 
 CF_sub<-c("Warm Wet","Hot Dry")
-GCM_sub<-c("inmcm4.rcp45", "IPSL-CM5A-MR.rcp85")
+GCM_sub2040<-c("CNRM-CM5.rcp45", "IPSL-CM5A-MR.rcp85")
+GCM_sub2060<-c("GFDL-ESM2M.rcp45", "IPSL-CM5A-MR.rcp85")
+GCM_sub2080<-c("inmcm4.rcp45", "IPSL-CM5A-MR.rcp85")
 
 col.RCP2 = c("#3030FF","#FFBF00") #medium blue & light orange
 colors2 <- c("#000080","#FA4646") #Navy & light red
@@ -285,8 +287,8 @@ C
 
 fm40.2<-FM40
 fm40.2$label<-""
-fm40.2$label[which(fm40.2$GCM %in% GCM_sub[1])]<-GCM_sub[1]
-fm40.2$label[which(fm40.2$GCM %in% GCM_sub[2])]<-GCM_sub[2]
+fm40.2$label[which(fm40.2$GCM %in% GCM_sub2040[1])]<-GCM_sub2040[1]
+fm40.2$label[which(fm40.2$GCM %in% GCM_sub2040[2])]<-GCM_sub2040[2]
 dualscatter = ggplot(fm40.2, aes(DeltaTmean, DeltaPr*365, 
                                  xmin=quantile(DeltaTmean,.25), 
                                  xmax=quantile(DeltaTmean,.75), 
@@ -295,10 +297,10 @@ dualscatter = ggplot(fm40.2, aes(DeltaTmean, DeltaPr*365,
 D<- dualscatter + 
   geom_point(colour="black",size=4) +
   geom_point(color="grey",size=3.5) + 
-  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub[1])]), y=mean(365*DeltaPr[which(GCM==GCM_sub[1])])), shape=21, size=10, stroke=4, colour=colors2[1]) +
-  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub[2])]), y=mean(365*DeltaPr[which(GCM==GCM_sub[2])])), shape=21, size=10, stroke=4, colour=colors2[2]) +
-  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub[1])]), y=mean(365*DeltaPr[which(GCM==GCM_sub[1])])), shape=20, size=4,  colour=colors2[1]) +
-  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub[2])]), y=mean(365*DeltaPr[which(GCM==GCM_sub[2])])), shape=20, size=4,  colour=colors2[2]) +
+  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub2040[1])]), y=mean(365*DeltaPr[which(GCM==GCM_sub2040[1])])), shape=21, size=10, stroke=4, colour=colors2[1]) +
+  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub2040[2])]), y=mean(365*DeltaPr[which(GCM==GCM_sub2040[2])])), shape=21, size=10, stroke=4, colour=colors2[2]) +
+  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub2040[1])]), y=mean(365*DeltaPr[which(GCM==GCM_sub2040[1])])), shape=20, size=4,  colour=colors2[1]) +
+  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub2040[2])]), y=mean(365*DeltaPr[which(GCM==GCM_sub2040[2])])), shape=20, size=4,  colour=colors2[2]) +
   geom_text_repel(aes(label=label),size=5,point.padding = .5) +
   theme(axis.text=element_text(size=18),
         axis.title = element_blank(),
