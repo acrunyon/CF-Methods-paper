@@ -511,6 +511,10 @@ PDiff[9,]<-abs(PDiff[7,]-PDiff[8,])
 
 write.csv(TDiff,"T_DiffsTable.csv",row.names = T)
 write.csv(PDiff,"P_DiffsTable.csv",row.names = T)
+
+# Hist values
+HistT<-mean(Baseline_Means$Tmean_C)
+HistP<-mean(Baseline_Means$Precip_mm)*365
 ################################# TIME-SERIES PLOTS ############################################
  # Can do RCP and Individual model plots now, need to discuss quadrant plots
 
