@@ -535,12 +535,12 @@ RPr<-merge(RPr,RPr2,by="Year");rm(RPr2)
 FA_R<-merge(FA_R,RPr,by="Year",all.x = T)
 
 ### By GCM
-FA_GCM<-subset(Future_all,GCM %in% GCM_sub)
+FA_GCM<-subset(Future_all,GCM %in% GCM_sub2080)
 FA_I<-aggregate(cbind(Precip_mm,Tmean_C)~Year+GCM,FA_GCM,mean)
 FA_I$Precip_mm<-FA_I$Precip_mm*365
 FA_I<-subset(FA_I,Year>2019 & Year<2098)
 FA_I$Year<-as.Date(FA_I$Year, format = "%Y")
-FA_I$GCM<-factor(FA_I$GCM,levels = GCM_sub)
+FA_I$GCM<-factor(FA_I$GCM,levels = GCM_sub2080)
 
 # GCM shading
 ITemp<-aggregate(Tmean_C~Year,FA_I,min);colnames(ITemp)[2]<-"Tymin"
@@ -552,7 +552,7 @@ IPr<-aggregate(Precip_mm~Year,FA_I,min);colnames(IPr)[2]<-"Pymin"
 IPr2<-aggregate(Precip_mm~Year,FA_I,max);colnames(IPr2)[2]<-"Pymax"
 IPr<-merge(IPr,IPr2,by="Year");rm(IPr2)
 FA_I<-merge(FA_I,IPr,by="Year",all.x = T)
-FA_I$GCM<-revalue(FA_I$GCM, c("IPSL-CM5A-LR.rcp45"="IPSL-CM5A-LR RCP 4.5", "IPSL-CM5A-MR.rcp85"="IPSL-CM5A-MR RCP 8.5"))
+FA_I$GCM<-revalue(FA_I$GCM, c("inmcm4.rcp45"="inmcm4 RCP 4.5", "IPSL-CM5A-MR.rcp85"="IPSL-CM5A-MR RCP 8.5"))
 
 a<-ggplot(FA_R, aes(x=Year, y=Tmean_C, group=emissions, colour = emissions)) +
   geom_ribbon(aes(x=Year,ymin=Tymin,ymax=Tymax), fill="grey",colour="white") +
@@ -578,7 +578,7 @@ a<-ggplot(FA_R, aes(x=Year, y=Tmean_C, group=emissions, colour = emissions)) +
   guides(color=guide_legend(override.aes = list(size=7)))  
 a
 
-b<-ggplot(FA_R, aes(x=Year, y=Precip_mm, group=emissions, colour = emissions)) +
+c<-ggplot(FA_R, aes(x=Year, y=Precip_mm, group=emissions, colour = emissions)) +
   geom_ribbon(aes(x=Year,ymin=Pymin,ymax=Pymax), fill="grey",colour="white") +
   geom_line(colour = "black",size=2.5, stat = "identity") +
   geom_line(size = 2, stat = "identity") +
@@ -592,16 +592,16 @@ b<-ggplot(FA_R, aes(x=Year, y=Precip_mm, group=emissions, colour = emissions)) +
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
         plot.margin = unit(c(0,1,0,1), "cm")) + 
-  labs(title = "(b)", 
+  labs(title = "(c)", 
        x = "Year", y = "Precipitation (mm)") +
   scale_color_manual(name="",values = col.RCP2) +
   scale_fill_manual(name="",values = col.RCP2) +
   scale_shape_manual(name="",values = c(21,22)) +
   scale_y_continuous(limits=c(min(FA_I$Precip_mm), max(FA_I$Precip_mm))) +
   guides(color=guide_legend(override.aes = list(size=7)))
-b
+c
 
-c<-ggplot(FA_I, aes(x=Year, y=Tmean_C, group=GCM, colour = GCM)) +
+b<-ggplot(FA_I, aes(x=Year, y=Tmean_C, group=GCM, colour = GCM)) +
   geom_ribbon(aes(x=Year,ymin=Tymin,ymax=Tymax), fill="grey",colour="white") +
   geom_line(colour = "black",size=2.5, stat = "identity") +
   geom_line(size = 2, stat = "identity") +
@@ -616,15 +616,14 @@ c<-ggplot(FA_I, aes(x=Year, y=Tmean_C, group=GCM, colour = GCM)) +
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
         plot.margin = unit(c(0,1,0,1), "cm")) + 
-  labs(title = "(c)", 
+  labs(title = "(b)", 
        x = "Year", y = " ") +
   scale_color_manual(name="",values = colors2) +
   scale_fill_manual(name="",values = colors2) +
   scale_shape_manual(name="",values = c(21,22)) +
   scale_y_continuous(limits=c(min(FA_I$Tmean_C), max(FA_I$Tmean_C))) +
   guides(color=guide_legend(override.aes = list(size=7))) 
-c
-
+b
 d<-ggplot(FA_I, aes(x=Year, y=Precip_mm, group=GCM, colour = GCM)) +
   geom_ribbon(aes(x=Year,ymin=Pymin,ymax=Pymax), fill="grey",colour="white") +
   geom_line(colour = "black",size=2.5, stat = "identity") +
@@ -648,9 +647,9 @@ d<-ggplot(FA_I, aes(x=Year, y=Precip_mm, group=GCM, colour = GCM)) +
   guides(color=guide_legend(override.aes = list(size=7)))
 d
 
-grid.arrange(a,c,b,d, nrow=2,ncol=2)
+grid.arrange(a,b,c,d, nrow=2,ncol=2)
 
-g <- arrangeGrob(a,c,b,d, nrow=2,ncol=2)
+g <- arrangeGrob(a,b,c,d, nrow=2,ncol=2)
 ggsave("Long-term_panel.png", g,width = 18, height = 12)
 
 ############################################# DETO PLOTS ####################################
