@@ -440,7 +440,7 @@ ggsave("Scatter_pannel-NO_NAMES.png", g,width = 10, height = 12)
 ################### Create climate futures ###################################
 Diffs_table<-as.data.frame(matrix(nrow=9,ncol=3))
 
-row.names(Diffs_table)<-c("RCP8.5","RCP4.5","RCP_range",CF_sub[2],CF_sub[1],"Quad_range",GCM_sub[2],GCM_sub[1],"Indiv_range")
+row.names(Diffs_table)<-c("RCP8.5","RCP4.5","RCP_range",CF_sub[2],CF_sub[1],"Quad_range",GCM_sub2040[2],"WW","Indiv_range")
 names(Diffs_table)<-c("2040","2060","2080")
 
 #subset by Quadrant
@@ -448,8 +448,13 @@ FM_quad<-subset(Future_Means,CF %in% CF_sub)
 FM_quad$CF<-factor(FM_quad$CF,levels=CF_sub)
 
 #subset by GCM
-FM_indiv<-subset(Future_Means,GCM %in% GCM_sub)
-FM_indiv$GCM<-factor(FM_indiv$GCM,levels=GCM_sub)
+FM_indiv2040<-subset(FM40,GCM %in% GCM_sub2040)
+FM_indiv2060<-subset(FM60,GCM %in% GCM_sub2060)
+FM_indiv2080<-subset(FM80,GCM %in% GCM_sub2080)
+
+FM_indiv<-rbind(FM_indiv2040,FM_indiv2060,FM_indiv2080)
+FM_indiv$GCM[which(FM_indiv$GCM != GCM_sub2040[2])]<-"WW"
+FM_indiv$GCM<-factor(FM_indiv$GCM,levels=c("WW",GCM_sub2040[2]))
 
 ## Aggregate
 RCP.P<-aggregate(Precip_mm~emissions+per,Future_Means,mean)
@@ -468,7 +473,7 @@ quad_t<-dcast(Quad.T,CF~per)
 rownames(quad_t)<-quad_t[,1];quad_t<-quad_t[,-1]
 indiv_t<-dcast(Indiv.T,GCM~per)
 rownames(indiv_t)<-indiv_t[,1];indiv_t<-indiv_t[,-1]
-indiv_t;GCM_sub #make sure ordering correct
+# indiv_t;GCM_sub #make sure ordering correct
 
 rcp_p<-dcast(RCP.P,emissions~per)
 rownames(rcp_p)<-rcp_p[,1];rcp_p<-rcp_p[,-1]
