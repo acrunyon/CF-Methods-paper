@@ -18,7 +18,8 @@ library(ggpubr)
 rm(list=ls())
 setwd("C:/Users/achildress/DOI/NPS-NRSS-CCRP-FC Science Adaptation - Documents/General/Climate Futures ms/Figs/")
 load("BIBE-data.RData")
-setwd("C:/Users/achildress/DOI/NPS-CCRP-FC Science Adaptation - Documents/General/Climate Futures ms/Figs/v5_200919/")
+missing_GCMs<-read.csv("BIBE_missing_models.csv")
+setwd("C:/Users/achildress/DOI/NPS-NRSS-CCRP-FC Science Adaptation - Documents/General/Climate Futures ms/Figs/v5_200919/")
 
 # Threshold percentages for defining Climate futures. Default low/high:  0.25, 0.75
 CFLow = 0.25     
@@ -37,6 +38,15 @@ colors2 <- c("#000080","#FA4646") #Navy & light red
 ### Create DFs for summarizing ###
 ALL_HIST$Year<-format(ALL_HIST$Date,"%Y")
 ALL_FUTURE$Year<-format(ALL_FUTURE$Date,"%Y")
+
+# Add missing GCMs to hist and future dfs
+missing_GCMs$Date<-as.POSIXlt(missing_GCMs$Date, format="%Y-%m-%d")
+missing_GCMs$Year<-format(missing_GCMs$Date,"%Y")
+ALL_HIST<-ALL_HIST[names(ALL_FUTURE)] #reoorder to match ALL_FUTURE and missing_GCMs dfs
+
+ALL_HIST<-rbind(ALL_HIST,missing_GCMs[which(missing_GCMs$Year<=2005),])
+ALL_FUTURE<-rbind(ALL_FUTURE,missing_GCMs[which(missing_GCMs$Year>2005),])
+
 ALL_HIST$TmeanCustom<-(ALL_HIST$TminCustom+ALL_HIST$TmaxCustom)/2
 ALL_FUTURE$TmeanCustom<-(ALL_FUTURE$TminCustom+ALL_FUTURE$TmaxCustom)/2
 
@@ -71,8 +81,8 @@ Baseline_Means = data.frame(aggregate(cbind(Precip_mm, Tmean_C)~GCM+per,
                                       Baseline_all, mean))    
 
 #### add delta columns in order to classify CFs
-Future_Means$DeltaPr = Future_Means$Precip_mm - Baseline_Means$Precip_mm
-Future_Means$DeltaTmean = Future_Means$Tmean_C - Baseline_Means$Tmean_C
+Future_Means$DeltaPr = Future_Means$Precip_mm - BaseMeanPr
+Future_Means$DeltaTmean = Future_Means$Tmean_C - BaseMeanTmean
 
 FM40<-subset(Future_Means,per=="2040")
 FM60<-subset(Future_Means,per=="2060")
@@ -311,15 +321,15 @@ D<- dualscatter +
   ###
   labs(title ="(d) Individual projection ") + #change
   scale_colour_manual(values=col.RCP2)+
-  guides(color=guide_legend(title=element_blank())) +
-  geom_rect(color = "black", alpha=0) + 
-  geom_hline(aes(yintercept=mean(DeltaPr*365)),linetype=2) + #change
-  geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) + #change
-  # Annotate quadrants
-  annotate("text",x=min(fm40$DeltaTmean),y=min(fm40$DeltaPr)*365,hjust=0,label="Warm Dry",size=6) +
-  annotate("text",x=min(fm40$DeltaTmean),y=max(fm40$DeltaPr)*365,hjust=0,label="Warm Wet",size=6) +
-  annotate("text",x=max(fm40$DeltaTmean),y=(min(fm40$DeltaPr)*365)+20,hjust=1,label="Hot Dry",size=6) +
-  annotate("text",x=max(fm40$DeltaTmean),y=max(fm40$DeltaPr)*365,hjust=1,label="Hot Wet",size=6) 
+  guides(color=guide_legend(title=element_blank())) 
+  # geom_rect(color = "black", alpha=0) + 
+  # geom_hline(aes(yintercept=mean(DeltaPr*365)),linetype=2) + #change
+  # geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) + #change
+  # # Annotate quadrants
+  # annotate("text",x=min(fm40$DeltaTmean),y=min(fm40$DeltaPr)*365,hjust=0,label="Warm Dry",size=6) +
+  # annotate("text",x=min(fm40$DeltaTmean),y=max(fm40$DeltaPr)*365,hjust=0,label="Warm Wet",size=6) +
+  # annotate("text",x=max(fm40$DeltaTmean),y=(min(fm40$DeltaPr)*365)+20,hjust=1,label="Hot Dry",size=6) +
+  # annotate("text",x=max(fm40$DeltaTmean),y=max(fm40$DeltaPr)*365,hjust=1,label="Hot Wet",size=6) 
 D
 
 
