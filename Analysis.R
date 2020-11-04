@@ -19,7 +19,7 @@ rm(list=ls())
 setwd("C:/Users/achildress/DOI/NPS-NRSS-CCRP-FC Science Adaptation - Documents/General/Climate Futures ms/Figs/")
 load("BIBE-data.RData")
 missing_GCMs<-read.csv("BIBE_missing_models.csv")
-setwd("C:/Users/achildress/DOI/NPS-NRSS-CCRP-FC Science Adaptation - Documents/General/Climate Futures ms/Figs/v5_200919/")
+setwd("C:/Users/achildress/DOI/NPS-NRSS-CCRP-FC Science Adaptation - Documents/General/Climate Futures ms/Figs/submission/")
 
 # Threshold percentages for defining Climate futures. Default low/high:  0.25, 0.75
 CFLow = 0.25     
@@ -225,11 +225,11 @@ dualscatter = ggplot(FM40, aes(DeltaTmean, DeltaPr*365,
                                xmax=quantile(DeltaTmean,.75), 
                                ymin=quantile(DeltaPr,.25)*365, 
                                ymax=quantile(DeltaPr,.75)*365))
-A<- dualscatter + geom_text_repel(aes(label=GCM),size=3.5) +
-  geom_point(colour="black",size=4) +
-  theme(axis.text=element_text(size=18), axis.text.x = element_blank(),
+A<- dualscatter + geom_text_repel(aes(label=GCM),size=1.75) +
+  geom_point(colour="black",size=2) +
+  theme(axis.text=element_text(size=9), axis.text.x = element_blank(),
         axis.title = element_blank(),
-        plot.title=element_text(size=18,face="bold",vjust=2,hjust=0),
+        plot.title=element_text(size=9,face="bold",vjust=2,hjust=0),
         legend.position = "none",
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black")) + 
@@ -244,13 +244,13 @@ dualscatter = ggplot(FM40, aes(DeltaTmean, DeltaPr*365,
                                ymin=quantile(DeltaPr,.25)*365, 
                                ymax=quantile(DeltaPr,.75)*365))
 B<- dualscatter + 
-  geom_point(colour="black",size=4) +
-  geom_point(aes(color=emissions),size=3.5) + geom_point(aes(x=mean(DeltaTmean[which(emissions=="RCP 4.5")]), y=mean(365*DeltaPr[which(emissions=="RCP 4.5")])), shape=8, size=10, stroke=4, colour=col.RCP2[1]) +
-  geom_point(aes(x=mean(DeltaTmean[which(emissions=="RCP 8.5")]), y=mean(365*DeltaPr[which(emissions=="RCP 8.5")])), shape=8, size=10, stroke=4, colour=col.RCP2[2]) +
-  theme(axis.text=element_text(size=18), axis.text.x = element_blank(),
+  geom_point(colour="black",size=2) +
+  geom_point(aes(color=emissions),size=1.75) + geom_point(aes(x=mean(DeltaTmean[which(emissions=="RCP 4.5")]), y=mean(365*DeltaPr[which(emissions=="RCP 4.5")])), shape=8, size=5, stroke=2, colour=col.RCP2[1]) +
+  geom_point(aes(x=mean(DeltaTmean[which(emissions=="RCP 8.5")]), y=mean(365*DeltaPr[which(emissions=="RCP 8.5")])), shape=8, size=5, stroke=2, colour=col.RCP2[2]) +
+  theme(axis.text=element_text(size=9), axis.text.x = element_blank(),
         axis.title = element_blank(),
-        plot.title=element_text(size=18,face="bold",vjust=2,hjust=0),
-        legend.text=element_text(size=18), legend.title=element_text(size=16),
+        plot.title=element_text(size=9,face="bold",vjust=2,hjust=0),
+        legend.text=element_text(size=9), legend.title=element_text(size=8),
         legend.position = c(.9,1),legend.direction = "vertical",legend.text.align = 1,
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black")) + 
@@ -270,14 +270,14 @@ dualscatter = ggplot(fm40, aes(DeltaTmean, DeltaPr*365,
                                ymin=quantile(DeltaPr,.25)*365, 
                                ymax=quantile(DeltaPr,.75)*365))
 C<- dualscatter + 
-  geom_point(colour="black",size=4) +
-  geom_point(colour="gray",size=3.5) + 
-  geom_point(aes(color=CF),size=3.5) + 
-  geom_point(aes(x=mean(DeltaTmean[which(CF=="Warm Wet")]), y=mean(365*DeltaPr[which(CF=="Warm Wet")])), shape=22, size=10, stroke=4, colour=colors2[1]) +
-  geom_point(aes(x=mean(DeltaTmean[which(CF=="Hot Dry")]), y=mean(365*DeltaPr[which(CF=="Hot Dry")])), shape=22, size=10, stroke=4, colour=colors2[2]) +
-  theme(axis.text=element_text(size=18),axis.text.x = element_blank(),
+  geom_point(colour="black",size=2) +
+  geom_point(colour="gray",size=1.75) + 
+  geom_point(aes(color=CF),size=1.75) + 
+  geom_point(aes(x=mean(DeltaTmean[which(CF=="Warm Wet")]), y=mean(365*DeltaPr[which(CF=="Warm Wet")])), shape=22, size=5, stroke=2, colour=colors2[1]) +
+  geom_point(aes(x=mean(DeltaTmean[which(CF=="Hot Dry")]), y=mean(365*DeltaPr[which(CF=="Hot Dry")])), shape=22, size=5, stroke=2, colour=colors2[2]) +
+  theme(axis.text=element_text(size=9),axis.text.x = element_blank(),
         axis.title = element_blank(),
-        plot.title=element_text(size=18,face="bold",vjust=2,hjust=0),
+        plot.title=element_text(size=9,face="bold",vjust=2,hjust=0),
         legend.position = "none",
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black")) + 
@@ -289,10 +289,10 @@ C<- dualscatter +
   geom_hline(aes(yintercept=mean(DeltaPr*365)),linetype=2) + #change
   geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) + #change
   # Annotate quadrants
-  annotate("text",x=min(fm40$DeltaTmean),y=min(fm40$DeltaPr)*365,hjust=0,label="Warm Dry",size=6) +
-  annotate("text",x=min(fm40$DeltaTmean),y=max(fm40$DeltaPr)*365,hjust=0,label="Warm Wet",size=6) +
-  annotate("text",x=max(fm40$DeltaTmean),y=min(fm40$DeltaPr)*365,hjust=1,label="Hot Dry",size=6) +
-  annotate("text",x=max(fm40$DeltaTmean),y=max(fm40$DeltaPr)*365,hjust=1,label="Hot Wet",size=6) 
+  annotate("text",x=min(fm40$DeltaTmean),y=min(fm40$DeltaPr)*365,hjust=0,label="Warm Dry",size=3) +
+  annotate("text",x=min(fm40$DeltaTmean),y=max(fm40$DeltaPr)*365,hjust=0,label="Warm Wet",size=3) +
+  annotate("text",x=max(fm40$DeltaTmean),y=min(fm40$DeltaPr)*365,hjust=1,label="Hot Dry",size=3) +
+  annotate("text",x=max(fm40$DeltaTmean),y=max(fm40$DeltaPr)*365,hjust=1,label="Hot Wet",size=3) 
 C
 
 fm40.2<-FM40
@@ -305,16 +305,16 @@ dualscatter = ggplot(fm40.2, aes(DeltaTmean, DeltaPr*365,
                                  ymin=quantile(DeltaPr,.25)*365, 
                                  ymax=quantile(DeltaPr,.75)*365))
 D<- dualscatter + 
-  geom_point(colour="black",size=4) +
-  geom_point(color="grey",size=3.5) + 
-  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub2040[1])]), y=mean(365*DeltaPr[which(GCM==GCM_sub2040[1])])), shape=21, size=10, stroke=4, colour=colors2[1]) +
-  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub2040[2])]), y=mean(365*DeltaPr[which(GCM==GCM_sub2040[2])])), shape=21, size=10, stroke=4, colour=colors2[2]) +
-  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub2040[1])]), y=mean(365*DeltaPr[which(GCM==GCM_sub2040[1])])), shape=20, size=4,  colour=colors2[1]) +
-  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub2040[2])]), y=mean(365*DeltaPr[which(GCM==GCM_sub2040[2])])), shape=20, size=4,  colour=colors2[2]) +
-  geom_text_repel(aes(label=label),size=5,point.padding = .5) +
-  theme(axis.text=element_text(size=18),
+  geom_point(colour="black",size=2) +
+  geom_point(color="grey",size=1.75) + 
+  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub2040[1])]), y=mean(365*DeltaPr[which(GCM==GCM_sub2040[1])])), shape=21, size=5, stroke=2, colour=colors2[1]) +
+  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub2040[2])]), y=mean(365*DeltaPr[which(GCM==GCM_sub2040[2])])), shape=21, size=5, stroke=2, colour=colors2[2]) +
+  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub2040[1])]), y=mean(365*DeltaPr[which(GCM==GCM_sub2040[1])])), shape=20, size=2,  colour=colors2[1]) +
+  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub2040[2])]), y=mean(365*DeltaPr[which(GCM==GCM_sub2040[2])])), shape=20, size=2,  colour=colors2[2]) +
+  geom_text_repel(aes(label=label),size=2.5,point.padding = .25) +
+  theme(axis.text=element_text(size=9),
         axis.title = element_blank(),
-        plot.title=element_text(size=18,face="bold",vjust=2,hjust=0),
+        plot.title=element_text(size=9,face="bold",vjust=2,hjust=0),
         legend.position = "none",
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black")) + 
@@ -335,9 +335,10 @@ D
 
 g <- ggarrange(A,B,C,D, nrow=4)
 G<-grid.arrange(g,bottom=textGrob("Annual temperature change (C)",
-                               gp=gpar(fontface="bold", col="black", fontsize=15)),
-             left=textGrob("Annual precipitation change (mm)", gp=gpar(fontface="bold", col="black", fontsize=15),rot=90))
-ggsave("CF_methods-scatter_pannel.png", G,width = 8, height = 14)
+                               gp=gpar(fontface="bold", col="black", fontsize=7)),
+             left=textGrob("Annual precipitation change (mm)", gp=gpar(fontface="bold", col="black", fontsize=7),rot=90))
+ggsave("Fig2.eps", G,width = 4, height = 7)
+ggsave("Fig2.jpg", G,width = 4, height = 7)
 
 
 # Figure 2 time-slice panel -- NO NAMES
@@ -347,14 +348,16 @@ dualscatter = ggplot(FM40, aes(DeltaTmean, DeltaPr*365,
                                xmax=quantile(FM40$DeltaTmean,.75), 
                                ymin=quantile(FM40$DeltaPr,.25)*365, 
                                ymax=quantile(FM40$DeltaPr,.75)*365))
-A<- dualscatter  + geom_point(colour="black",size=4) +
-  geom_point(aes(color=emissions),size=3.5) +
-  theme(axis.text=element_text(size=18),
+A<- dualscatter  + geom_point(colour="black",size=2) +
+  geom_point(aes(color=emissions),size=1.75) +
+  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub2040[1])]), y=mean(365*DeltaPr[which(GCM==GCM_sub2040[1])])), shape=21, size=5, stroke=2, colour="black") +
+  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub2040[2])]), y=mean(365*DeltaPr[which(GCM==GCM_sub2040[2])])), shape=21, size=5, stroke=2, colour="black") +
+  theme(axis.text=element_text(size=9),
         axis.text.x=element_blank(),
         axis.title.x=element_blank(),
-        axis.title.y=element_text(size=18,vjust=0.2),
-        plot.title=element_text(size=18,face="bold",vjust=2,hjust=0),
-        legend.text=element_text(size=18), legend.title=element_blank(),
+        axis.title.y=element_text(size=9,vjust=0.2),
+        plot.title=element_text(size=9,face="bold",vjust=2,hjust=0),
+        legend.text=element_text(size=9), legend.title=element_blank(),
         legend.position = c(.9,1),legend.direction = "vertical",legend.text.align = 1,
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
@@ -370,8 +373,8 @@ A<- dualscatter  + geom_point(colour="black",size=4) +
   geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) + #change
   scale_x_continuous(limits = c(min(FM40$DeltaTmean), max(FM80$DeltaTmean))) +
   scale_y_continuous(limits = c((min(FM80$DeltaPr)*365)-.5, (max(FM80$DeltaPr)*365)+.5)) +
-  annotate("text",x=min(FM40$DeltaTmean),y=max(FM80$DeltaPr)*365,hjust=0,label="Warm Wet",size=6) +
-  annotate("text",x=max(FM80$DeltaTmean),y=(min(FM80$DeltaPr)*365),hjust=1,label="Hot Dry",size=6)  
+  annotate("text",x=min(FM40$DeltaTmean),y=max(FM80$DeltaPr)*365,hjust=0,label="Warm Wet",size=3) +
+  annotate("text",x=max(FM80$DeltaTmean),y=(min(FM80$DeltaPr)*365),hjust=1,label="Hot Dry",size=3)  
 A
 
 # 2060
@@ -380,14 +383,16 @@ dualscatter = ggplot(FM60, aes(DeltaTmean, DeltaPr*365,
                                xmax=quantile(FM60$DeltaTmean,.75), 
                                ymin=quantile(FM60$DeltaPr,.25)*365, 
                                ymax=quantile(FM60$DeltaPr,.75)*365))
-B<-dualscatter  + geom_point(colour="black",size=4) +
-  geom_point(aes(color=emissions),size=3.5) +
-  theme(axis.text=element_text(size=18),
+B<-dualscatter  + geom_point(colour="black",size=2) +
+  geom_point(aes(color=emissions),size=1.75) +
+  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub2060[1])]), y=mean(365*DeltaPr[which(GCM==GCM_sub2060[1])])), shape=21, size=5, stroke=2, colour="black") +
+  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub2060[2])]), y=mean(365*DeltaPr[which(GCM==GCM_sub2060[2])])), shape=21, size=5, stroke=2, colour="black") +
+  theme(axis.text=element_text(size=9),
         axis.text.x=element_blank(),
         axis.title.x=element_blank(),
-        axis.title.y=element_text(size=18,vjust=0.2),
-        plot.title=element_text(size=18,face="bold",vjust=2,hjust=0),
-        legend.text=element_text(size=18), legend.title=element_text(size=16),
+        axis.title.y=element_text(size=9,vjust=0.2),
+        plot.title=element_text(size=9,face="bold",vjust=2,hjust=0),
+        legend.text=element_text(size=9), legend.title=element_text(size=8),
         legend.position = "none",
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
@@ -403,8 +408,8 @@ B<-dualscatter  + geom_point(colour="black",size=4) +
   geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) +#change
   scale_x_continuous(limits = c(min(FM40$DeltaTmean), max(FM80$DeltaTmean))) +
   scale_y_continuous(limits = c((min(FM80$DeltaPr)*365)-.5, (max(FM80$DeltaPr)*365)+.5)) +
-  annotate("text",x=min(FM40$DeltaTmean),y=max(FM80$DeltaPr)*365,hjust=0,label="Warm Wet",size=6) +
-  annotate("text",x=max(FM80$DeltaTmean),y=(min(FM80$DeltaPr)*365),hjust=1,label="Hot Dry",size=6) 
+  annotate("text",x=min(FM40$DeltaTmean),y=max(FM80$DeltaPr)*365,hjust=0,label="Warm Wet",size=3) +
+  annotate("text",x=max(FM80$DeltaTmean),y=(min(FM80$DeltaPr)*365),hjust=1,label="Hot Dry",size=3) 
 
 
 # 2080
@@ -413,13 +418,15 @@ dualscatter = ggplot(FM80, aes(DeltaTmean, DeltaPr*365,
                                xmax=quantile(FM80$DeltaTmean,.75), 
                                ymin=quantile(FM80$DeltaPr,.25)*365, 
                                ymax=quantile(FM80$DeltaPr,.75)*365))
-C<-dualscatter  + geom_point(colour="black",size=4) +
-  geom_point(aes(color=emissions),size=3.5) +
-  theme(axis.text=element_text(size=18),
-        axis.title.x=element_text(size=18,vjust=-0.2),
-        axis.title.y=element_text(size=18,vjust=0.2),
-        plot.title=element_text(size=18,face="bold",vjust=2,hjust=0),
-        legend.text=element_text(size=18), legend.title=element_text(size=16),
+C<-dualscatter  + geom_point(colour="black",size=2) +
+  geom_point(aes(color=emissions),size=1.75) +
+  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub2080[1])]), y=mean(365*DeltaPr[which(GCM==GCM_sub2080[1])])), shape=21, size=5, stroke=2, colour="black") +
+  geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub2080[2])]), y=mean(365*DeltaPr[which(GCM==GCM_sub2080[2])])), shape=21, size=5, stroke=2, colour="black") +
+  theme(axis.text=element_text(size=9),
+        axis.title.x=element_text(size=9,vjust=-0.2),
+        axis.title.y=element_text(size=9,vjust=0.2),
+        plot.title=element_text(size=9,face="bold",vjust=2,hjust=0),
+        legend.text=element_text(size=9), legend.title=element_text(size=8),
         legend.position = "none",
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
@@ -434,15 +441,16 @@ C<-dualscatter  + geom_point(colour="black",size=4) +
   geom_hline(aes(yintercept=mean(DeltaPr*365)),linetype=2) + #change
   geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) + #change
   scale_x_continuous(limits = c(min(FM40$DeltaTmean), max(FM80$DeltaTmean))) +
-  scale_y_continuous(limits = c((min(FM80$DeltaPr)*365)-.5, (max(FM80$DeltaPr)*365)+.5)) +
-  annotate("text",x=min(FM40$DeltaTmean),y=max(FM80$DeltaPr)*365,hjust=0,label="Warm Wet",size=6) +
-  annotate("text",x=max(FM80$DeltaTmean),y=(min(FM80$DeltaPr)*365),hjust=1,label="Hot Dry",size=6) 
+  scale_y_continuous(limits = c((min(FM80$DeltaPr)*365)-.5, (max(FM80$DeltaPr)*365)+5)) +
+  annotate("text",x=min(FM40$DeltaTmean),y=(max(FM80$DeltaPr)*365)-25,hjust=0,label="Warm Wet",size=3) +
+  annotate("text",x=max(FM80$DeltaTmean),y=(min(FM80$DeltaPr)*365)+25,hjust=1,label="Hot Dry",size=3) 
 C
 
 grid.arrange(A,B,C, nrow=3)
 
 g <- arrangeGrob(A,B,C, nrow=3)
-ggsave("Scatter_pannel-NO_NAMES.png", g,width = 10, height = 12)
+ggsave("Fig3.eps", g,width = 4, height = 7)
+ggsave("Fig3.jpg", g,width = 4, height = 7)
 
 ########################## TIME SERIES
 
@@ -570,15 +578,15 @@ FA_I$GCM<-revalue(FA_I$GCM, c("inmcm4.rcp45"="inmcm4 RCP 4.5", "IPSL-CM5A-MR.rcp
 
 a<-ggplot(FA_R, aes(x=Year, y=Tmean_C, group=emissions, colour = emissions)) +
   geom_ribbon(aes(x=Year,ymin=Tymin,ymax=Tymax), fill="grey",colour="white") +
-  geom_line(colour = "black",size=2.5, stat = "identity") +
-  geom_line(size = 2, stat = "identity") +
-  geom_point(colour= "black", size=4, aes(fill = factor(emissions), shape = factor(emissions))) +
-  theme(axis.text=element_text(size=20),
+  geom_line(colour = "black",size=1.25, stat = "identity") +
+  geom_line(size = 1, stat = "identity") +
+  geom_point(colour= "black", size=2, aes(fill = factor(emissions), shape = factor(emissions))) +
+  theme(axis.text=element_text(size=10),
         axis.text.x=element_blank(),
         axis.title.x=element_blank(),
-        axis.title.y=element_text(size=24,vjust=1.0),
-        plot.title=element_text(size=26,hjust=0),
-        legend.text=element_text(size=18), legend.title=element_text(size=18),
+        axis.title.y=element_text(size=12,vjust=1.0),
+        plot.title=element_text(size=13,hjust=0),
+        legend.text=element_text(size=9), legend.title=element_text(size=9),
         legend.position = c(.1,1), legend.direction = "vertical",legend.text.align = 0,
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
@@ -589,19 +597,19 @@ a<-ggplot(FA_R, aes(x=Year, y=Tmean_C, group=emissions, colour = emissions)) +
   scale_fill_manual(name="",values = col.RCP2) +
   scale_shape_manual(name="",values = c(21,22)) +
   scale_y_continuous(limits=c(min(FA_I$Tmean_C), max(FA_I$Tmean_C))) +
-  guides(color=guide_legend(override.aes = list(size=7)))  
+  guides(color=guide_legend(override.aes = list(size=3.5)))  
 a
 
 c<-ggplot(FA_R, aes(x=Year, y=Precip_mm, group=emissions, colour = emissions)) +
   geom_ribbon(aes(x=Year,ymin=Pymin,ymax=Pymax), fill="grey",colour="white") +
-  geom_line(colour = "black",size=2.5, stat = "identity") +
-  geom_line(size = 2, stat = "identity") +
-  geom_point(colour= "black", size=4, aes(fill = factor(emissions), shape = factor(emissions))) +
-  theme(axis.text=element_text(size=20),
-        axis.title.x=element_text(size=20,vjust=-0.2),
-        axis.title.y=element_text(size=20,vjust=1.0),
-        plot.title=element_text(size=26,hjust=0),
-        legend.text=element_text(size=24), legend.title=element_text(size=24),
+  geom_line(colour = "black",size=1.25, stat = "identity") +
+  geom_line(size = 1, stat = "identity") +
+  geom_point(colour= "black", size=2, aes(fill = factor(emissions), shape = factor(emissions))) +
+  theme(axis.text=element_text(size=10),
+        axis.title.x=element_text(size=10,vjust=-0.2),
+        axis.title.y=element_text(size=10,vjust=1.0),
+        plot.title=element_text(size=13,hjust=0),
+        legend.text=element_text(size=12), legend.title=element_text(size=12),
         legend.position = "none",
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
@@ -612,20 +620,20 @@ c<-ggplot(FA_R, aes(x=Year, y=Precip_mm, group=emissions, colour = emissions)) +
   scale_fill_manual(name="",values = col.RCP2) +
   scale_shape_manual(name="",values = c(21,22)) +
   scale_y_continuous(limits=c(min(FA_I$Precip_mm), max(FA_I$Precip_mm))) +
-  guides(color=guide_legend(override.aes = list(size=7)))
+  guides(color=guide_legend(override.aes = list(size=3.5)))
 c
 
 b<-ggplot(FA_I, aes(x=Year, y=Tmean_C, group=GCM, colour = GCM)) +
   geom_ribbon(aes(x=Year,ymin=Tymin,ymax=Tymax), fill="grey",colour="white") +
-  geom_line(colour = "black",size=2.5, stat = "identity") +
-  geom_line(size = 2, stat = "identity") +
-  geom_point(colour= "black", size=4, aes(fill = factor(GCM), shape = factor(GCM))) +
-  theme(axis.text=element_text(size=20),
+  geom_line(colour = "black",size=1.25, stat = "identity") +
+  geom_line(size = 1, stat = "identity") +
+  geom_point(colour= "black", size=2, aes(fill = factor(GCM), shape = factor(GCM))) +
+  theme(axis.text=element_text(size=10),
         axis.text.x=element_blank(),
         axis.title.x=element_blank(),
-        axis.title.y=element_text(size=20,vjust=1.0),
-        plot.title=element_text(size=25,hjust=0),
-        legend.text=element_text(size=18), legend.title=element_text(size=18),
+        axis.title.y=element_text(size=10,vjust=1.0),
+        plot.title=element_text(size=13,hjust=0),
+        legend.text=element_text(size=9), legend.title=element_text(size=9),
         legend.position = c(.22,1), legend.direction = "vertical",legend.text.align = 0,
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
@@ -636,18 +644,18 @@ b<-ggplot(FA_I, aes(x=Year, y=Tmean_C, group=GCM, colour = GCM)) +
   scale_fill_manual(name="",values = colors2) +
   scale_shape_manual(name="",values = c(21,22)) +
   scale_y_continuous(limits=c(min(FA_I$Tmean_C), max(FA_I$Tmean_C))) +
-  guides(color=guide_legend(override.aes = list(size=7))) 
+  guides(color=guide_legend(override.aes = list(size=3.5))) 
 b
 d<-ggplot(FA_I, aes(x=Year, y=Precip_mm, group=GCM, colour = GCM)) +
   geom_ribbon(aes(x=Year,ymin=Pymin,ymax=Pymax), fill="grey",colour="white") +
-  geom_line(colour = "black",size=2.5, stat = "identity") +
-  geom_line(size = 2, stat = "identity") +
-  geom_point(colour= "black", size=4, aes(fill = factor(GCM), shape = factor(GCM))) +
-  theme(axis.text=element_text(size=20),
-        axis.title.x=element_text(size=20,vjust=-0.2),
-        axis.title.y=element_text(size=20,vjust=1.0),
-        plot.title=element_text(size=26,hjust=0),
-        legend.text=element_text(size=24), legend.title=element_text(size=24),
+  geom_line(colour = "black",size=1.25, stat = "identity") +
+  geom_line(size = 1, stat = "identity") +
+  geom_point(colour= "black", size=2, aes(fill = factor(GCM), shape = factor(GCM))) +
+  theme(axis.text=element_text(size=10),
+        axis.title.x=element_text(size=10,vjust=-0.2),
+        axis.title.y=element_text(size=10,vjust=1.0),
+        plot.title=element_text(size=13,hjust=0),
+        legend.text=element_text(size=12), legend.title=element_text(size=12),
         legend.position = "none",
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
@@ -658,60 +666,14 @@ d<-ggplot(FA_I, aes(x=Year, y=Precip_mm, group=GCM, colour = GCM)) +
   scale_fill_manual(name="",values = colors2) +
   scale_shape_manual(name="",values = c(21,22)) +
   scale_y_continuous(limits=c(min(FA_I$Precip_mm), max(FA_I$Precip_mm))) +
-  guides(color=guide_legend(override.aes = list(size=7)))
+  guides(color=guide_legend(override.aes = list(size=3.5)))
 d
 
 grid.arrange(a,b,c,d, nrow=2,ncol=2)
 
 g <- arrangeGrob(a,b,c,d, nrow=2,ncol=2)
-ggsave("Long-term_panel.png", g,width = 18, height = 12)
+g$vp = grid::viewport(height=0.9, width=0.9) 
+ggsave("Fig4.eps", g,width = 9, height = 7)
+ggsave("Fig4.jpg", g,width = 9, height = 7)
 
-############################################# DETO PLOTS ####################################
-load("DETO.RData")
 
-t2.annual$me.col<-"b"
-t2.annual$me.col[which(t2.annual$GCM=="Climate Future 1")]<-"w"
-
-a<-ggplot(t2.annual, aes(x=GCM, y=BegGrow, colour=GCM)) + 
-  geom_boxplot(colour="black",aes(fill = factor(GCM)))+ 
-  geom_jitter(shape = 21, size = 5, aes(fill = factor(GCM),colour=factor(me.col)), position=position_jitter(0.2)) +
-  theme(axis.text=element_text(size=20),
-        axis.text.x=element_blank(),
-        axis.title.x=element_blank(),
-        axis.title.y=element_text(size=24,vjust=1.0), 
-        plot.title=element_text(size=26,hjust=0),
-        legend.position = "none",
-        panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-        panel.background = element_blank(), axis.line = element_line(colour = "black")) +
-  labs(title = "(a)",
-       x = " ", y = "Julian date", colour = "Climate Future") +
-  scale_color_manual(name="",values = c("black","white"),guide=FALSE) +
-  scale_fill_manual(name="",values = colors5)
-dat<-ggplot_build(a)$data[[1]]
-dat1<-dat[1,]
-A<-a + geom_segment(data=dat1, aes(x=xmin, xend=xmax, 
-                                y=middle, yend=middle), colour="grey", size=1)
-
-b<-ggplot(t2.annual, aes(x=GCM, y=HI_mod, colour=GCM)) + 
-  geom_boxplot(colour="black",aes(fill = factor(GCM)))+ 
-  geom_jitter(shape = 21, size = 5, aes(fill = factor(GCM),colour=factor(me.col)), position=position_jitter(0.2)) +
-  theme(axis.text=element_text(size=20),
-        axis.title.x=element_text(size=24,vjust=-0.2),
-        axis.title.y=element_text(size=24,vjust=1.0), 
-        plot.title=element_text(size=26,hjust=0),
-        legend.position = "none",
-        panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-        panel.background = element_blank(), axis.line = element_line(colour = "black")) +
-  labs(title = "(b)",
-       x = " ", y = "Days", colour = "Climate Future") +
-  scale_color_manual(name="",values = c("black","white"),guide=FALSE) +
-  scale_fill_manual(name="",values = colors5)
-dat<-ggplot_build(b)$data[[1]]
-dat1<-dat[1,]
-B<-b + geom_segment(data=dat1, aes(x=xmin, xend=xmax, 
-                                y=middle, yend=middle), colour="grey", size=1)
-
-grid.arrange(A,B,nrow=2,ncol=1)
-
-g <- arrangeGrob(A,B, nrow=2,ncol=1)
-ggsave("DETO-plots.png", g,width = 18, height = 12)
