@@ -334,7 +334,7 @@ D
 
 
 g <- ggarrange(A,B,C,D, nrow=4)
-G<-grid.arrange(g,bottom=textGrob("Annual temperature change (C)",
+G<-grid.arrange(g,bottom=textGrob("Annual temperature change (˚C)",
                                gp=gpar(fontface="bold", col="black", fontsize=7)),
              left=textGrob("Annual precipitation change (mm)", gp=gpar(fontface="bold", col="black", fontsize=7),rot=90))
 ggsave("Fig2.eps", G,width = 4, height = 7)
@@ -353,15 +353,12 @@ A<- dualscatter  + geom_point(colour="black",size=2) +
   geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub2040[1])]), y=mean(365*DeltaPr[which(GCM==GCM_sub2040[1])])), shape=21, size=5, stroke=2, colour="black") +
   geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub2040[2])]), y=mean(365*DeltaPr[which(GCM==GCM_sub2040[2])])), shape=21, size=5, stroke=2, colour="black") +
   theme(axis.text=element_text(size=9),
-        axis.text.x=element_blank(),
-        axis.title.x=element_blank(),
-        axis.title.y=element_text(size=9,vjust=0.2),
+        axis.title = element_blank(),
         plot.title=element_text(size=9,face="bold",vjust=2,hjust=0),
         legend.text=element_text(size=9), legend.title=element_blank(),
         legend.position = c(.9,1),legend.direction = "vertical",legend.text.align = 1,
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-        panel.background = element_blank(), axis.line = element_line(colour = "black"),
-        plot.margin = unit(c(0.2,1,0.2,1), "cm")) + 
+        panel.background = element_blank(), axis.line = element_line(colour = "black")) + 
   ###
   labs(title ="(a) 2040", 
        x = " ", # Change
@@ -373,7 +370,7 @@ A<- dualscatter  + geom_point(colour="black",size=2) +
   geom_vline(aes(xintercept=mean(DeltaTmean)),linetype=2) + #change
   scale_x_continuous(limits = c(min(FM40$DeltaTmean), max(FM80$DeltaTmean))) +
   scale_y_continuous(limits = c((min(FM80$DeltaPr)*365)-.5, (max(FM80$DeltaPr)*365)+.5)) +
-  annotate("text",x=min(FM40$DeltaTmean),y=max(FM80$DeltaPr)*365,hjust=0,label="Warm Wet",size=3) +
+  annotate("text",x=min(FM40$DeltaTmean),y=max(FM80$DeltaPr)*365-10,hjust=0,label="Warm \nWet",size=3) +
   annotate("text",x=max(FM80$DeltaTmean),y=(min(FM80$DeltaPr)*365),hjust=1,label="Hot Dry",size=3)  
 A
 
@@ -388,19 +385,17 @@ B<-dualscatter  + geom_point(colour="black",size=2) +
   geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub2060[1])]), y=mean(365*DeltaPr[which(GCM==GCM_sub2060[1])])), shape=21, size=5, stroke=2, colour="black") +
   geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub2060[2])]), y=mean(365*DeltaPr[which(GCM==GCM_sub2060[2])])), shape=21, size=5, stroke=2, colour="black") +
   theme(axis.text=element_text(size=9),
-        axis.text.x=element_blank(),
-        axis.title.x=element_blank(),
-        axis.title.y=element_text(size=9,vjust=0.2),
+        axis.title = element_blank(),
         plot.title=element_text(size=9,face="bold",vjust=2,hjust=0),
         legend.text=element_text(size=9), legend.title=element_text(size=8),
         legend.position = "none",
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-        panel.background = element_blank(), axis.line = element_line(colour = "black"),
-        plot.margin = unit(c(0.2,1,0.2,1), "cm")) + 
+        panel.background = element_blank(), axis.line = element_line(colour = "black"))+
+        # plot.margin = unit(c(0.2,1,0.2,1), "cm")) + 
   ###
   labs(title ="(b) 2060", 
        x = " ", # Change
-       y = "Annual precipitation change (mm)") + #change
+       y = " ") + #change
   scale_colour_manual(values=col.RCP2)+
   guides(color=guide_legend(title="Emissions\nScenarios\n")) +
   geom_rect(color = "black", alpha=0) + 
@@ -423,17 +418,15 @@ C<-dualscatter  + geom_point(colour="black",size=2) +
   geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub2080[1])]), y=mean(365*DeltaPr[which(GCM==GCM_sub2080[1])])), shape=21, size=5, stroke=2, colour="black") +
   geom_point(aes(x=mean(DeltaTmean[which(GCM==GCM_sub2080[2])]), y=mean(365*DeltaPr[which(GCM==GCM_sub2080[2])])), shape=21, size=5, stroke=2, colour="black") +
   theme(axis.text=element_text(size=9),
-        axis.title.x=element_text(size=9,vjust=-0.2),
-        axis.title.y=element_text(size=9,vjust=0.2),
+        axis.title = element_blank(),
         plot.title=element_text(size=9,face="bold",vjust=2,hjust=0),
         legend.text=element_text(size=9), legend.title=element_text(size=8),
         legend.position = "none",
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-        panel.background = element_blank(), axis.line = element_line(colour = "black"),
-        plot.margin = unit(c(0.2,1,0.2,1), "cm")) + 
+        panel.background = element_blank(), axis.line = element_line(colour = "black")) + 
   ###
   labs(title ="(c) 2080", 
-       x = "Annual temperature change (C)", # Change
+       x = " ", # Change
        y = " ") + #change
   scale_colour_manual(values=col.RCP2)+
   guides(color=guide_legend(title="Emissions Scenarios ")) +
@@ -446,11 +439,12 @@ C<-dualscatter  + geom_point(colour="black",size=2) +
   annotate("text",x=max(FM80$DeltaTmean),y=(min(FM80$DeltaPr)*365)+25,hjust=1,label="Hot Dry",size=3) 
 C
 
-grid.arrange(A,B,C, nrow=3)
-
 g <- arrangeGrob(A,B,C, nrow=3)
-ggsave("Fig3.eps", g,width = 4, height = 7)
-ggsave("Fig3.jpg", g,width = 4, height = 7)
+G<-grid.arrange(g,bottom=textGrob("Annual temperature change (˚C)",
+                                  gp=gpar(fontface="bold", col="black", fontsize=7)),
+                left=textGrob("Annual precipitation change (mm)", gp=gpar(fontface="bold", col="black", fontsize=7),rot=90))
+ggsave("Fig3.eps", G,width = 4, height = 7)
+ggsave("Fig3.jpg", G,width = 4, height = 7)
 
 ########################## TIME SERIES
 
@@ -592,11 +586,11 @@ a<-ggplot(FA_R, aes(x=Year, y=Tmean_C, group=emissions, colour = emissions)) +
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
         plot.margin = unit(c(0,1,0,1), "cm")) + 
   labs(title = "(a)", 
-       x = "Year", y = "Temperature (C)") +
+       x = "Year", y = "Temperature (˚C)") +
   scale_color_manual(name="",values = col.RCP2) +
   scale_fill_manual(name="",values = col.RCP2) +
   scale_shape_manual(name="",values = c(21,22)) +
-  scale_y_continuous(limits=c(min(FA_I$Tmean_C), max(FA_I$Tmean_C))) +
+  scale_y_continuous(limits=c(min(FA_I$Tmean_C),25)) +
   guides(color=guide_legend(override.aes = list(size=3.5)))  
 a
 
@@ -634,7 +628,7 @@ b<-ggplot(FA_I, aes(x=Year, y=Tmean_C, group=GCM, colour = GCM)) +
         axis.title.y=element_text(size=10,vjust=1.0),
         plot.title=element_text(size=13,hjust=0),
         legend.text=element_text(size=9), legend.title=element_text(size=9),
-        legend.position = c(.22,1), legend.direction = "vertical",legend.text.align = 0,
+        legend.position = c(.25,1), legend.direction = "vertical",legend.text.align = 0,
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
         plot.margin = unit(c(0,1,0,1), "cm")) + 
@@ -643,7 +637,7 @@ b<-ggplot(FA_I, aes(x=Year, y=Tmean_C, group=GCM, colour = GCM)) +
   scale_color_manual(name="",values = colors2) +
   scale_fill_manual(name="",values = colors2) +
   scale_shape_manual(name="",values = c(21,22)) +
-  scale_y_continuous(limits=c(min(FA_I$Tmean_C), max(FA_I$Tmean_C))) +
+  scale_y_continuous(limits=c(min(FA_I$Tmean_C), 25)) +
   guides(color=guide_legend(override.aes = list(size=3.5))) 
 b
 d<-ggplot(FA_I, aes(x=Year, y=Precip_mm, group=GCM, colour = GCM)) +
