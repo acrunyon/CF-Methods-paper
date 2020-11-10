@@ -335,8 +335,8 @@ D
 
 g <- ggarrange(A,B,C,D, nrow=4)
 G<-grid.arrange(g,bottom=textGrob("Annual temperature change (˚C)",
-                               gp=gpar(fontface="bold", col="black", fontsize=7)),
-             left=textGrob("Annual precipitation change (mm)", gp=gpar(fontface="bold", col="black", fontsize=7),rot=90))
+                               gp=gpar(fontface="bold", col="black", fontsize=9)),
+             left=textGrob("Annual precipitation change (mm)", gp=gpar(fontface="bold", col="black", fontsize=9),rot=90))
 ggsave("Fig2.eps", G,width = 4, height = 7)
 ggsave("Fig2.jpg", G,width = 4, height = 7)
 
@@ -441,8 +441,8 @@ C
 
 g <- arrangeGrob(A,B,C, nrow=3)
 G<-grid.arrange(g,bottom=textGrob("Annual temperature change (˚C)",
-                                  gp=gpar(fontface="bold", col="black", fontsize=7)),
-                left=textGrob("Annual precipitation change (mm)", gp=gpar(fontface="bold", col="black", fontsize=7),rot=90))
+                                  gp=gpar(fontface="bold", col="black", fontsize=9)),
+                left=textGrob("Annual precipitation change (mm)", gp=gpar(fontface="bold", col="black", fontsize=9),rot=90))
 ggsave("Fig3.eps", G,width = 4, height = 7)
 ggsave("Fig3.jpg", G,width = 4, height = 7)
 
@@ -581,7 +581,7 @@ a<-ggplot(FA_R, aes(x=Year, y=Tmean_C, group=emissions, colour = emissions)) +
         axis.title.y=element_text(size=12,vjust=1.0),
         plot.title=element_text(size=13,hjust=0),
         legend.text=element_text(size=9), legend.title=element_text(size=9),
-        legend.position = c(.1,1), legend.direction = "vertical",legend.text.align = 0,
+        legend.position = c(.2,1), legend.direction = "vertical",legend.text.align = 0,
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
         plot.margin = unit(c(0,1,0,1), "cm")) + 
@@ -590,7 +590,7 @@ a<-ggplot(FA_R, aes(x=Year, y=Tmean_C, group=emissions, colour = emissions)) +
   scale_color_manual(name="",values = col.RCP2) +
   scale_fill_manual(name="",values = col.RCP2) +
   scale_shape_manual(name="",values = c(21,22)) +
-  scale_y_continuous(limits=c(min(FA_I$Tmean_C),25)) +
+  scale_y_continuous(limits=c(min(FA_I$Tmean_C),max(FA_I$Tmean_C))) +
   guides(color=guide_legend(override.aes = list(size=3.5)))  
 a
 
@@ -628,7 +628,7 @@ b<-ggplot(FA_I, aes(x=Year, y=Tmean_C, group=GCM, colour = GCM)) +
         axis.title.y=element_text(size=10,vjust=1.0),
         plot.title=element_text(size=13,hjust=0),
         legend.text=element_text(size=9), legend.title=element_text(size=9),
-        legend.position = c(.25,1), legend.direction = "vertical",legend.text.align = 0,
+        legend.position = c(.35,1), legend.direction = "vertical",legend.text.align = 0,
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
         plot.margin = unit(c(0,1,0,1), "cm")) + 
@@ -637,7 +637,7 @@ b<-ggplot(FA_I, aes(x=Year, y=Tmean_C, group=GCM, colour = GCM)) +
   scale_color_manual(name="",values = colors2) +
   scale_fill_manual(name="",values = colors2) +
   scale_shape_manual(name="",values = c(21,22)) +
-  scale_y_continuous(limits=c(min(FA_I$Tmean_C), 25)) +
+  scale_y_continuous(limits=c(min(FA_I$Tmean_C), max(FA_I$Tmean_C))) +
   guides(color=guide_legend(override.aes = list(size=3.5))) 
 b
 d<-ggplot(FA_I, aes(x=Year, y=Precip_mm, group=GCM, colour = GCM)) +
