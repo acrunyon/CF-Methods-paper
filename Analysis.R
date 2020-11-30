@@ -670,4 +670,14 @@ g$vp = grid::viewport(height=0.9, width=0.9)
 ggsave("Fig4.eps", g,width = 9, height = 7)
 ggsave("Fig4.jpg", g,width = 9, height = 7)
 
+############### FIGURE 5 -- BIBE FLOW ##############################
+
+
+decade<-aggregate(Flow.below~CF+decade,all2,sum)
+mean(decade$Flow.below[which(decade$CF=="Historical")])
+decade<-subset(decade,decade!=2000 & decade!=2010)
+decade$diff<-decade$Flow.below-mean(decade$Flow.below[which(decade$CF=="Historical")])
+
+decade$CF<-factor(decade$CF,levels=c("Historical","Warm Wet","Hot Dry"))
+
 
