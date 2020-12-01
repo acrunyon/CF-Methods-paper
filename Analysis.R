@@ -14,11 +14,13 @@ library(gridExtra)
 library(grid)
 library(ggrepel)
 library(ggpubr)
+library(stringr)
 
 rm(list=ls())
 setwd("C:/Users/achildress/DOI/NPS-NRSS-CCRP-FC Science Adaptation - Documents/General/Climate Futures ms/Figs/")
 load("BIBE-data.RData")
 missing_GCMs<-read.csv("BIBE_missing_models.csv")
+missing_GCMs$GCM <-str_sub(missing_GCMs$GCM, end=-7)
 setwd("C:/Users/achildress/DOI/NPS-NRSS-CCRP-FC Science Adaptation - Documents/General/Climate Futures ms/Figs/submission/")
 
 # Threshold percentages for defining Climate futures. Default low/high:  0.25, 0.75
@@ -45,7 +47,10 @@ missing_GCMs$Year<-format(missing_GCMs$Date,"%Y")
 ALL_HIST<-ALL_HIST[names(ALL_FUTURE)] #reoorder to match ALL_FUTURE and missing_GCMs dfs
 
 ALL_HIST<-rbind(ALL_HIST,missing_GCMs[which(missing_GCMs$Year<=2005),])
-ALL_FUTURE<-rbind(ALL_FUTURE,missing_GCMs[which(missing_GCMs$Year>2005),])
+MG1<-missing_GCMs[which(missing_GCMs$Year>2005),]
+MG2<-MG1
+MG1$GCM<-paste(MG1$GCM,"rcp45",sep=".");MG2$GCM<-paste(MG1$GCM,"rcp85",sep=".")
+ALL_FUTURE<-rbind(ALL_FUTURE,MG1,MG2);rm(MG1,MG2)
 
 ALL_HIST$TmeanCustom<-(ALL_HIST$TminCustom+ALL_HIST$TmaxCustom)/2
 ALL_FUTURE$TmeanCustom<-(ALL_FUTURE$TminCustom+ALL_FUTURE$TmaxCustom)/2
@@ -671,13 +676,220 @@ ggsave("Fig4.eps", g,width = 9, height = 7)
 ggsave("Fig4.jpg", g,width = 9, height = 7)
 
 ############### FIGURE 5 -- BIBE FLOW ##############################
+# model data y = 0.8134x + 10.529
+xint = 0.8134
+yint = 10.529
+
+# Copy ALL_FUTURE
+AH<-ALL_HIST
+A<-AH
+AH$GCM<-paste(AH$GCM,"rcp45",sep=".")
+A$GCM<-paste(A$GCM,"rcp85",sep=".")
+AH<-rbind(AH,A);rm(A)
+
+AF<-ALL_FUTURE
+all<-rbind(Hist, Fut)
+
+all$Month<-format(all$Date,"%m")
+all$Year<-format(all$Date,"%Y")
+
+all.mon<-aggregate(Precip_mm~GCM+Month+Year,all,sum,na.rm=TRUE)
+all.mon$Date<-as.Date(paste(all.mon$Year,all.mon$Month,1,sep="-"),format="%Y-%m-%d")
+all.mon$pr.corrected<-all.mon$Precip_mm+correction #bias correction - delta method
+# all.mon$CFGCM<-as.factor(paste0(as.character(all.mon$CF)," ", as.character(all.mon$GCM)))
+
+### Need to do this in loop by CF then merge back together
+CF.split<-split(all.mon,all.mon$GCM)
+
+for (i in 1:length(CF.split)){
+  CF.split[[i]]$Pr_3mo<-rollmean(CF.split[[i]]$Precip_mm,k=3,fill=NA,align="right")
+  CF.split[[i]]$PrLag<-lag(CF.split[[i]]$Pr_3mo,2)
+  CF.split[[i]]$modeled<- xint*(CF.split[[i]]$PrLag) + yint
+  # CF.split[[i]]$modeled<- lm$coefficients[2]*(CF.split[[i]]$PrLag) + lm$coefficients[2]
+}
+
+all2<- ldply(CF.split, data.frame)
+
+all2$Flow.below<-0
+all2$Flow.below[which(all2$modeled<17)]<-1
+all2$Year<-as.numeric(all2$Year)
+all2$decade<-all2$Year - all2$Year%%10
+
+# all.per<-subset(all2, Year >=2050 & Year <2080)
+all.per2<-aggregate(Flow.below~GCM+Month+Year+decade,all2,mean)
+
+decade.mean<-aggregate(Flow.below~GCM+decade,all.per2,sum)
+decade.mean$emissions[grep("rcp85",decade.mean$GCM)] = "RCP 8.5"
+decade.mean$emissions[grep("rcp45",decade.mean$GCM)] = "RCP 4.5"
+decade.mean$emissions[which(decade.mean$decade<2010)] <- "Historical"
+
+decade.mean$GCM[which(decade.mean$decade<2010)] <- "Historical"
+decade.mean$Flow.below[which(decade.mean$decade == 2000 | decade.mean$decade == 2010)] <- NA
 
 
-decade<-aggregate(Flow.below~CF+decade,all2,sum)
-mean(decade$Flow.below[which(decade$CF=="Historical")])
-decade<-subset(decade,decade!=2000 & decade!=2010)
-decade$diff<-decade$Flow.below-mean(decade$Flow.below[which(decade$CF=="Historical")])
+# SUBSET AND PLOT
+emissions.flow<-aggregate(Flow.below~emissions+decade,decade.mean,mean)
+CF.flow<-subset(decade.mean,GCM %in% GCM_sub2080 | GCM == "Historical")
+CF.flow<-aggregate(Flow.below~GCM+decade,CF.flow,mean)
+CF.flow$GCM<-revalue(CF.flow$GCM, c("inmcm4.rcp45"="INMCM4 RCP 4.5", "IPSL-CM5A-MR.rcp85"="IPSL-CM5A-MR RCP 8.5"))
 
-decade$CF<-factor(decade$CF,levels=c("Historical","Warm Wet","Hot Dry"))
+
+### 2-Fig plot
+
+# bars same size @ https://stackoverflow.com/questions/38101512/the-same-width-of-the-bars-in-geom-barposition-dodge
+
+a<-ggplot(emissions.flow, aes(x=decade, y=Flow.below, group=emissions, colour = emissions)) +
+  # geom_rect(xmin=2050, xmax=2080,
+  #           ymin=-Inf, ymax=Inf,fill="grey",alpha=0.2,colour="black") +
+  geom_bar(colour = "black", stat = "identity",aes(fill=emissions),position="dodge") +
+  geom_hline(yintercept=17,linetype=2,colour="black",size=1) +
+  theme(axis.text=element_text(size=10),
+        axis.title.x=element_text(size=10,vjust=-0.2),
+        axis.title.y=element_text(size=10,vjust=1.0),
+        plot.title=element_text(size=13,hjust=0),
+        legend.text=element_text(size=9), legend.title=element_text(size=9),
+        legend.position=c(0,1), 
+        legend.justification='left',
+        legend.direction='horizontal',
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"),
+        plot.margin = unit(c(0,1,0,1), "cm")) + 
+  scale_color_manual(name="",values = c("grey",col.RCP2)) +
+  scale_fill_manual(breaks = c("RCP 4.5", "RCP 8.5"),name="",values = c("grey",col.RCP2)) +
+  labs(title = "(a) ",
+       y="Months / Decade",x=" ") + guides(color=guide_legend(override.aes = list(size=7))) +
+  scale_y_continuous(limits=c(0,48))
+a
+
+
+b<-ggplot(CF.flow, aes(x=decade, y=Flow.below, group=GCM, colour = GCM)) +
+  # geom_rect(xmin=2050, xmax=2080,
+  #           ymin=-Inf, ymax=Inf,fill="grey",alpha=0.2,colour="black") +
+  geom_bar(colour = "black", stat = "identity",aes(fill=GCM),position="dodge") +
+  geom_hline(yintercept=17,linetype=2,colour="black",size=1) +
+  theme(axis.text=element_text(size=10),
+        axis.title.x=element_text(size=10,vjust=-0.2),
+        axis.title.y=element_text(size=10,vjust=1.0),
+        plot.title=element_text(size=13,hjust=0),
+        legend.text=element_text(size=12), legend.title=element_text(size=12),
+        legend.position=c(0,1), 
+        legend.justification='left',
+        legend.direction='horizontal',
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"),
+        plot.margin = unit(c(0,1,0,1), "cm")) + 
+  scale_color_manual(name="",values = c("grey",colors2)) +
+  scale_fill_manual(breaks = c("INMCM4 RCP 4.5", "IPSL-CM5A-MR RCP 8.5"),name="",values = c("grey",colors2)) +
+  labs(title = "(b) ",
+       y="Months / Decade",x=" ") + guides(color=guide_legend(override.aes = list(size=7))) +
+  scale_y_continuous(limits=c(0,48))
+b
+
+grid.arrange(a,b, nrow=2,ncol=1)
+
+g <- arrangeGrob(a,b, nrow=2,ncol=1)
+g<- annotate_figure(g,  top = text_grob("Months/decade with reconstructed flow below 20 GPM"))
+g$vp = grid::viewport(height=0.9, width=0.9) 
+ggsave("Fig5a.eps", g,width = 9, height = 7)
+ggsave("Fig5a.jpg", g,width = 9, height = 7)
+
+
+### 4-Fig plot
+a<-ggplot(subset(emissions.flow,emissions !="RCP 8.5"), 
+          aes(x=decade, y=Flow.below, group=emissions, colour = emissions)) +
+  # geom_rect(xmin=2050, xmax=2080,
+  #           ymin=-Inf, ymax=Inf,fill="grey",alpha=0.2,colour="black") +
+  geom_bar(colour = "black", stat = "identity",aes(fill=emissions),position="dodge") +
+  geom_hline(yintercept=17,linetype=2,colour="black",size=1) +
+  theme(axis.text=element_text(size=10),
+        axis.title.x=element_text(size=10,vjust=-0.2),
+        axis.title.y=element_text(size=10,vjust=1.0),
+        plot.title=element_text(size=13,hjust=0),
+        legend.text=element_text(size=9), legend.title=element_text(size=9),
+        legend.position="none",
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"),
+        plot.margin = unit(c(0,1,0,1), "cm")) + 
+  scale_color_manual(name="",values = c("grey",col.RCP2[1])) +
+  scale_fill_manual(name="",values = c("grey",col.RCP2[1])) +
+  labs(title = "(a) RCP 4.5",
+       y="Months / Decade",x=" ") + guides(color=guide_legend(override.aes = list(size=7))) +
+  scale_y_continuous(limits=c(0,48))
+a
+
+
+b<-ggplot(subset(emissions.flow,emissions !="RCP 8.5"), 
+          aes(x=decade, y=Flow.below, group=emissions, colour = emissions)) +
+  # geom_rect(xmin=2050, xmax=2080,
+  #           ymin=-Inf, ymax=Inf,fill="grey",alpha=0.2,colour="black") +
+  geom_bar(colour = "black", stat = "identity",aes(fill=emissions),position="dodge") +
+  geom_hline(yintercept=17,linetype=2,colour="black",size=1) +
+  theme(axis.text=element_text(size=10),
+        axis.title.x=element_text(size=10,vjust=-0.2),
+        axis.title.y=element_text(size=10,vjust=1.0),
+        plot.title=element_text(size=13,hjust=0),
+        legend.text=element_text(size=9), legend.title=element_text(size=9),
+        legend.position="none",
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"),
+        plot.margin = unit(c(0,1,0,1), "cm")) + 
+  scale_color_manual(name="",values = c("grey",col.RCP2[2])) +
+  scale_fill_manual(name="",values = c("grey",col.RCP2[2])) +
+  labs(title = "(b) RCP 8.5",
+       y="Months / Decade",x=" ") + guides(color=guide_legend(override.aes = list(size=7))) +
+  scale_y_continuous(limits=c(0,48))
+b
+
+c<-ggplot(subset(CF.flow,GCM !="IPSL-CM5A-MR RCP 8.5"), 
+          aes(x=decade, y=Flow.below, group=GCM, colour = GCM)) +
+  # geom_rect(xmin=2050, xmax=2080,
+  #           ymin=-Inf, ymax=Inf,fill="grey",alpha=0.2,colour="black") +
+  geom_bar(colour = "black", stat = "identity",aes(fill=GCM),position="dodge") +
+  geom_hline(yintercept=17,linetype=2,colour="black",size=1) +
+  theme(axis.text=element_text(size=10),
+        axis.title.x=element_text(size=10,vjust=-0.2),
+        axis.title.y=element_text(size=10,vjust=1.0),
+        plot.title=element_text(size=13,hjust=0),
+        legend.text=element_text(size=9), legend.title=element_text(size=9),
+        legend.position="none",
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"),
+        plot.margin = unit(c(0,1,0,1), "cm")) + 
+  scale_color_manual(name="",values = c("grey",colors2[1])) +
+  scale_fill_manual(name="",values = c("grey",colors2[1])) +
+  labs(title = "(c) INMCM4 RCP 4.5",
+       y=" ",x=" ") + guides(color=guide_legend(override.aes = list(size=7))) +
+  scale_y_continuous(limits=c(0,48))
+c
+
+d<-ggplot(subset(CF.flow,GCM !="INMCM4 RCP 4.5"), 
+          aes(x=decade, y=Flow.below, group=GCM, colour = GCM)) +
+  # geom_rect(xmin=2050, xmax=2080,
+  #           ymin=-Inf, ymax=Inf,fill="grey",alpha=0.2,colour="black") +
+  geom_bar(colour = "black", stat = "identity",aes(fill=GCM),position="dodge") +
+  geom_hline(yintercept=17,linetype=2,colour="black",size=1) +
+  theme(axis.text=element_text(size=10),
+        axis.title.x=element_text(size=10,vjust=-0.2),
+        axis.title.y=element_text(size=10,vjust=1.0),
+        plot.title=element_text(size=13,hjust=0),
+        legend.text=element_text(size=9), legend.title=element_text(size=9),
+        legend.position="none",
+        panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"),
+        plot.margin = unit(c(0,1,0,1), "cm")) + 
+  scale_color_manual(name="",values = c("grey",colors2[2])) +
+  scale_fill_manual(name="",values = c("grey",colors2[2])) +
+  labs(title = "(d) IPSL-CM5A-MR RCP 8.5",
+       y=" ",x=" ") + guides(color=guide_legend(override.aes = list(size=7))) +
+  scale_y_continuous(limits=c(0,48))
+d
+
+grid.arrange(a,c,b,d, nrow=2,ncol=2)
+
+g <- arrangeGrob(a,c,b,d, nrow=2,ncol=2)
+g<- annotate_figure(g,  top = text_grob("Months/decade with reconstructed flow below 20 GPM"))
+g$vp = grid::viewport(height=0.9, width=0.9) 
+ggsave("Fig5b.eps", g,width = 9, height = 7)
+ggsave("Fig5b.jpg", g,width = 9, height = 7)
 
 
