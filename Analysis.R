@@ -688,7 +688,7 @@ A$GCM<-paste(A$GCM,"rcp85",sep=".")
 AH<-rbind(AH,A);rm(A)
 
 AF<-ALL_FUTURE
-all<-rbind(Hist, Fut)
+all<-rbind(AH, AF)
 
 all$Month<-format(all$Date,"%m")
 all$Year<-format(all$Date,"%Y")
@@ -818,7 +818,7 @@ a<-ggplot(subset(emissions.flow,emissions !="RCP 8.5"),
 a
 
 
-b<-ggplot(subset(emissions.flow,emissions !="RCP 8.5"), 
+b<-ggplot(subset(emissions.flow,emissions !="RCP 4.5"), 
           aes(x=decade, y=Flow.below, group=emissions, colour = emissions)) +
   # geom_rect(xmin=2050, xmax=2080,
   #           ymin=-Inf, ymax=Inf,fill="grey",alpha=0.2,colour="black") +
