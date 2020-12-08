@@ -573,7 +573,7 @@ IPr<-aggregate(Precip_mm~Year,FA_I,min);colnames(IPr)[2]<-"Pymin"
 IPr2<-aggregate(Precip_mm~Year,FA_I,max);colnames(IPr2)[2]<-"Pymax"
 IPr<-merge(IPr,IPr2,by="Year");rm(IPr2)
 FA_I<-merge(FA_I,IPr,by="Year",all.x = T)
-FA_I$GCM<-revalue(FA_I$GCM, c("inmcm4.rcp45"="inmcm4 RCP 4.5", "IPSL-CM5A-MR.rcp85"="IPSL-CM5A-MR RCP 8.5"))
+FA_I$GCM<-revalue(FA_I$GCM, c("inmcm4.rcp45"="INM-CM4 RCP 4.5", "IPSL-CM5A-MR.rcp85"="IPSL-CM5A-MR RCP 8.5"))
 
 a<-ggplot(FA_R, aes(x=Year, y=Tmean_C, group=emissions, colour = emissions)) +
   geom_ribbon(aes(x=Year,ymin=Tymin,ymax=Tymax), fill="grey",colour="white") +
@@ -589,7 +589,7 @@ a<-ggplot(FA_R, aes(x=Year, y=Tmean_C, group=emissions, colour = emissions)) +
         legend.position = c(.2,1), legend.direction = "vertical",legend.text.align = 0,
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
-        plot.margin = unit(c(0,1,0,1), "cm")) + 
+        plot.margin = unit(c(0,-.3,0,1), "cm")) + 
   labs(title = "(a)", 
        x = "Year", y = "Temperature (˚C)") +
   scale_color_manual(name="",values = col.RCP2) +
@@ -612,7 +612,7 @@ c<-ggplot(FA_R, aes(x=Year, y=Precip_mm, group=emissions, colour = emissions)) +
         legend.position = "none",
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
-        plot.margin = unit(c(0,1,0,1), "cm")) + 
+        plot.margin = unit(c(0,-.3,0,1), "cm")) + 
   labs(title = "(c)", 
        x = "Year", y = "Precipitation (mm)") +
   scale_color_manual(name="",values = col.RCP2) +
@@ -636,7 +636,7 @@ b<-ggplot(FA_I, aes(x=Year, y=Tmean_C, group=GCM, colour = GCM)) +
         legend.position = c(.35,1), legend.direction = "vertical",legend.text.align = 0,
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
-        plot.margin = unit(c(0,1,0,1), "cm")) + 
+        plot.margin = unit(c(0,1,0,-.3), "cm")) + 
   labs(title = "(b)", 
        x = "Year", y = " ") +
   scale_color_manual(name="",values = colors2) +
@@ -658,7 +658,7 @@ d<-ggplot(FA_I, aes(x=Year, y=Precip_mm, group=GCM, colour = GCM)) +
         legend.position = "none",
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
-        plot.margin = unit(c(0,1,0,1), "cm")) + 
+        plot.margin = unit(c(0,1,0,-.3), "cm")) + 
   labs(title = "(d)", 
        x = "Year", y = " ") +
   scale_color_manual(name="",values = colors2) +
@@ -668,9 +668,7 @@ d<-ggplot(FA_I, aes(x=Year, y=Precip_mm, group=GCM, colour = GCM)) +
   guides(color=guide_legend(override.aes = list(size=3.5)))
 d
 
-grid.arrange(a,b,c,d, nrow=2,ncol=2)
-
-g <- arrangeGrob(a,b,c,d, nrow=2,ncol=2)
+g <- grid.arrange(arrangeGrob(a,b,c,d, nrow=2,ncol=2)) 
 g$vp = grid::viewport(height=0.9, width=0.9) 
 ggsave("Fig4.eps", g,width = 9, height = 7)
 ggsave("Fig4.jpg", g,width = 9, height = 7)
@@ -679,6 +677,7 @@ ggsave("Fig4.jpg", g,width = 9, height = 7)
 # model data y = 0.8134x + 10.529
 xint = 0.8134
 yint = 10.529
+correction = 0.1941937 #From BIBE New_Flow_Recreate_v2.R line 61 - diff between station and MACA data
 
 # Copy ALL_FUTURE
 AH<-ALL_HIST
@@ -689,20 +688,25 @@ AH<-rbind(AH,A);rm(A)
 
 AF<-ALL_FUTURE
 all<-rbind(AH, AF)
+all<-subset(all,GCM %in% GCM_sub2080)
+all<-subset(all, Date<as.Date("2000-01-01") | Date>=as.Date("2006-01-01")) #remove after troubleshooting
+
 
 all$Month<-format(all$Date,"%m")
 all$Year<-format(all$Date,"%Y")
 
-all.mon<-aggregate(Precip_mm~GCM+Month+Year,all,sum,na.rm=TRUE)
+all$pr.corrected<-all$Precip_mm+correction #bias correction - delta method
+
+all.mon<-aggregate(pr.corrected~GCM+Month+Year,all,sum,na.rm=TRUE)
 all.mon$Date<-as.Date(paste(all.mon$Year,all.mon$Month,1,sep="-"),format="%Y-%m-%d")
-all.mon$pr.corrected<-all.mon$Precip_mm+correction #bias correction - delta method
+
 # all.mon$CFGCM<-as.factor(paste0(as.character(all.mon$CF)," ", as.character(all.mon$GCM)))
 
 ### Need to do this in loop by CF then merge back together
 CF.split<-split(all.mon,all.mon$GCM)
 
 for (i in 1:length(CF.split)){
-  CF.split[[i]]$Pr_3mo<-rollmean(CF.split[[i]]$Precip_mm,k=3,fill=NA,align="right")
+  CF.split[[i]]$Pr_3mo<-rollmean(CF.split[[i]]$pr.corrected,k=3,fill=NA,align="right")
   CF.split[[i]]$PrLag<-lag(CF.split[[i]]$Pr_3mo,2)
   CF.split[[i]]$modeled<- xint*(CF.split[[i]]$PrLag) + yint
   # CF.split[[i]]$modeled<- lm$coefficients[2]*(CF.split[[i]]$PrLag) + lm$coefficients[2]
@@ -723,7 +727,7 @@ decade.mean$emissions[grep("rcp85",decade.mean$GCM)] = "RCP 8.5"
 decade.mean$emissions[grep("rcp45",decade.mean$GCM)] = "RCP 4.5"
 decade.mean$emissions[which(decade.mean$decade<2010)] <- "Historical"
 
-decade.mean$GCM[which(decade.mean$decade<2010)] <- "Historical"
+decade.mean$GCM[which(decade.mean$decade<2000)] <- "Historical"
 decade.mean$Flow.below[which(decade.mean$decade == 2000 | decade.mean$decade == 2010)] <- NA
 
 
