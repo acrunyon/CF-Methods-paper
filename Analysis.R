@@ -589,7 +589,7 @@ a<-ggplot(FA_R, aes(x=Year, y=Tmean_C, group=emissions, colour = emissions)) +
         legend.position = c(.2,1), legend.direction = "vertical",legend.text.align = 0,
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
-        plot.margin = unit(c(0,-.3,0,1), "cm")) + 
+        plot.margin = unit(c(0,.2,0,1), "cm")) + 
   labs(title = "(a)", 
        x = "Year", y = "Temperature (˚C)") +
   scale_color_manual(name="",values = col.RCP2) +
@@ -612,7 +612,7 @@ c<-ggplot(FA_R, aes(x=Year, y=Precip_mm, group=emissions, colour = emissions)) +
         legend.position = "none",
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
-        plot.margin = unit(c(0,-.3,0,1), "cm")) + 
+        plot.margin = unit(c(0,.2,0,1), "cm")) + 
   labs(title = "(c)", 
        x = "Year", y = "Precipitation (mm)") +
   scale_color_manual(name="",values = col.RCP2) +
@@ -636,7 +636,7 @@ b<-ggplot(FA_I, aes(x=Year, y=Tmean_C, group=GCM, colour = GCM)) +
         legend.position = c(.35,1), legend.direction = "vertical",legend.text.align = 0,
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
-        plot.margin = unit(c(0,1,0,-.3), "cm")) + 
+        plot.margin = unit(c(0,1,0,-.6), "cm")) + 
   labs(title = "(b)", 
        x = "Year", y = " ") +
   scale_color_manual(name="",values = colors2) +
@@ -658,7 +658,7 @@ d<-ggplot(FA_I, aes(x=Year, y=Precip_mm, group=GCM, colour = GCM)) +
         legend.position = "none",
         panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
         panel.background = element_blank(), axis.line = element_line(colour = "black"),
-        plot.margin = unit(c(0,1,0,-.3), "cm")) + 
+        plot.margin = unit(c(0,1,0,-.6), "cm")) + 
   labs(title = "(d)", 
        x = "Year", y = " ") +
   scale_color_manual(name="",values = colors2) +
