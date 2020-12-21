@@ -1,6 +1,4 @@
-# Read in BIBE data
-#Create df that is 
-# Changed units to metric 200414
+# Code for producing CF MS figs and tables
 
 #setwd(WD_plots)
 library(ggplot2)
