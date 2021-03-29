@@ -222,13 +222,15 @@ CF_GCM = data.frame(GCM = Future_Means$GCM, CF = Future_Means$CF,per = Future_Me
 
 ############### SCATTERPLOTS
 # Figure 1 - 2080 individual scatterplots for 3 CF methods
+# Per reviewer comment - changing names to #s
+FM40$numbers<-seq(1,nrow(FM40),1)
 # Projection names
 dualscatter = ggplot(FM40, aes(DeltaTmean, DeltaPr*365, 
                                xmin=quantile(DeltaTmean,.25), 
                                xmax=quantile(DeltaTmean,.75), 
                                ymin=quantile(DeltaPr,.25)*365, 
                                ymax=quantile(DeltaPr,.75)*365))
-A<- dualscatter + geom_text_repel(aes(label=GCM),size=1.75) +
+A<- dualscatter + geom_text_repel(aes(label=numbers),size=1.75) +
   geom_point(colour="black",size=2) +
   theme(axis.text=element_text(size=9), axis.text.x = element_blank(),
         axis.title = element_blank(),
@@ -276,8 +278,8 @@ C<- dualscatter +
   geom_point(colour="black",size=2) +
   geom_point(colour="gray",size=1.75) + 
   geom_point(aes(color=CF),size=1.75) + 
-  geom_point(aes(x=mean(DeltaTmean[which(CF=="Warm Wet")]), y=mean(365*DeltaPr[which(CF=="Warm Wet")])), shape=22, size=5, stroke=2, colour=colors2[1]) +
-  geom_point(aes(x=mean(DeltaTmean[which(CF=="Hot Dry")]), y=mean(365*DeltaPr[which(CF=="Hot Dry")])), shape=22, size=5, stroke=2, colour=colors2[2]) +
+  geom_point(aes(x=mean(DeltaTmean[which(CF=="Warm Wet")]), y=mean(365*DeltaPr[which(CF=="Warm Wet")])), shape=8, size=5, stroke=2, colour=colors2[1]) +
+  geom_point(aes(x=mean(DeltaTmean[which(CF=="Hot Dry")]), y=mean(365*DeltaPr[which(CF=="Hot Dry")])), shape=8, size=5, stroke=2, colour=colors2[2]) +
   theme(axis.text=element_text(size=9),axis.text.x = element_blank(),
         axis.title = element_blank(),
         plot.title=element_text(size=9,face="bold",vjust=2,hjust=0),
@@ -343,6 +345,7 @@ G<-grid.arrange(g,bottom=textGrob("Annual temperature change (˚C)",
 ggsave("Fig2.eps", G,width = 4, height = 7)
 ggsave("Fig2.jpg", G,width = 4, height = 7)
 
+write.csv(data.frame(GCM=FM40$GCM,numbers=FM40$numbers),"GCM-numbers.csv",row.names=F)
 
 # Figure 2 time-slice panel -- NO NAMES
 # 2040
