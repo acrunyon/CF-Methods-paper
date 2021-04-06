@@ -339,11 +339,11 @@ D
 
 
 g <- ggarrange(A,B,C,D, nrow=4)
-G<-grid.arrange(g,bottom=textGrob("Annual temperature change (˚C)",
+G<-grid.arrange(g,bottom=textGrob("Change in annual mean temperature (°C)",
                                gp=gpar(fontface="bold", col="black", fontsize=9)),
-             left=textGrob("Annual precipitation change (mm)", gp=gpar(fontface="bold", col="black", fontsize=9),rot=90))
-ggsave("Fig2.eps", G,width = 4, height = 7)
-ggsave("Fig2.jpg", G,width = 4, height = 7)
+             left=textGrob("Change in total annual precipitation (mm)", gp=gpar(fontface="bold", col="black", fontsize=9),rot=90))
+ggsave("Fig2.eps", G,width = 6, height = 7)
+ggsave("Fig2.jpg", G,width = 6, height = 7)
 
 write.csv(data.frame(GCM=FM40$GCM,numbers=FM40$numbers),"GCM-numbers.csv",row.names=F)
 
@@ -446,11 +446,11 @@ C<-dualscatter  + geom_point(colour="black",size=2) +
 C
 
 g <- arrangeGrob(A,B,C, nrow=3)
-G<-grid.arrange(g,bottom=textGrob("Annual temperature change (˚C)",
+G<-grid.arrange(g,bottom=textGrob("Change in annual mean temperature (°C)",
                                   gp=gpar(fontface="bold", col="black", fontsize=9)),
-                left=textGrob("Annual precipitation change (mm)", gp=gpar(fontface="bold", col="black", fontsize=9),rot=90))
-ggsave("Fig3.eps", G,width = 4, height = 7)
-ggsave("Fig3.jpg", G,width = 4, height = 7)
+                left=textGrob("Change in total annual precipitation (mm)", gp=gpar(fontface="bold", col="black", fontsize=9),rot=90))
+ggsave("Fig3.eps", G,width = 6, height = 7)
+ggsave("Fig3.jpg", G,width = 6, height = 7)
 
 ########################## TIME SERIES
 
