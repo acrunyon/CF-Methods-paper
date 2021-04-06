@@ -230,7 +230,7 @@ dualscatter = ggplot(FM40, aes(DeltaTmean, DeltaPr*365,
                                xmax=quantile(DeltaTmean,.75), 
                                ymin=quantile(DeltaPr,.25)*365, 
                                ymax=quantile(DeltaPr,.75)*365))
-A<- dualscatter + geom_text_repel(aes(label=numbers),size=1.75) +
+A<- dualscatter + geom_text_repel(aes(label=numbers),size=2.25) +
   geom_point(colour="black",size=2) +
   theme(axis.text=element_text(size=9), axis.text.x = element_blank(),
         axis.title = element_blank(),
